@@ -21,7 +21,9 @@ import {
   ArrowUpRight, 
   CircleDollarSign, 
   ShieldAlert, 
-  Send
+  Send,
+  Menu,
+  X
 } from 'lucide-react';
 import './App.css';
 
@@ -30,6 +32,7 @@ export default function App() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [activeTab, setActiveTab] = useState('mint'); // 'mint' | 'transfer' | 'oracle' | 'synthetics'
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Balances
   const [dgxBalance, setDgxBalance] = useState(12500.00);
@@ -224,20 +227,77 @@ export default function App() {
         </nav>
 
         <div className="nav-actions">
-          <div className="badge-pill badge-emerald" style={{ display: 'none', md: 'flex' }}>
+          <div className="badge-pill badge-emerald nav-status-pill">
             <span className="live-pulse" />
             <span>Sepolia Active</span>
           </div>
 
           <button 
-            className={walletConnected ? "btn-minimal" : "btn-colorful"}
+            className={walletConnected ? "btn-minimal nav-wallet-btn" : "btn-colorful nav-wallet-btn"}
             onClick={handleConnectWallet}
           >
             <Wallet size={18} />
             <span>{walletConnected ? walletAddress : 'Connect Wallet'}</span>
           </button>
+
+          {/* Hamburger 3-lines button for mobile and tablets */}
+          <button 
+            className="hamburger-btn" 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </header>
+
+      {/* Mobile Navigation Drawer / Dropdown */}
+      <div className={`mobile-nav-drawer ${mobileMenuOpen ? 'open' : ''}`}>
+        <div className="mobile-nav-links">
+          <a 
+            href="#playground" 
+            className="mobile-nav-link-item"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Zap size={18} color="var(--color-indigo)" />
+            <span>DeFi Portal & Simulator</span>
+          </a>
+          <a 
+            href="#tokens" 
+            className="mobile-nav-link-item"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Layers size={18} color="var(--color-cyan)" />
+            <span>10-Token Universe & Synthetics</span>
+          </a>
+          <a 
+            href="#architecture" 
+            className="mobile-nav-link-item"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Cpu size={18} color="var(--color-emerald)" />
+            <span>AI Risk Engine & 7-Step Specs</span>
+          </a>
+        </div>
+
+        <div className="mobile-nav-footer">
+          <div className="badge-pill badge-emerald" style={{ width: 'fit-content', marginBottom: 12 }}>
+            <span className="live-pulse" />
+            <span>Sepolia Testnet v1.4 Connected</span>
+          </div>
+          <button 
+            className={walletConnected ? "btn-minimal" : "btn-colorful"}
+            style={{ width: '100%' }}
+            onClick={() => {
+              handleConnectWallet();
+              setMobileMenuOpen(false);
+            }}
+          >
+            <Wallet size={18} />
+            <span>{walletConnected ? walletAddress : 'Connect Web3 Wallet'}</span>
+          </button>
+        </div>
+      </div>
 
       {/* 3. HERO SECTION */}
       <section className="hero-section">

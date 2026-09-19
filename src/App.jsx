@@ -1147,47 +1147,47 @@ export default function App() {
               <span>Full Lifecycle Workflow</span>
             </div>
             <h2 style={{ fontSize: '2.4rem', lineHeight: 1.15, marginBottom: 24 }}>
-              How DRAGO X Executes in 7 Continuous Steps
+              How Your Money Moves in 5 Simple Steps
             </h2>
 
             <div className="steps-list">
               <div className="step-card">
                 <div className="step-number-bubble">1</div>
                 <div>
-                  <div className="step-title">Connect & Verify</div>
-                  <div className="step-desc">Client accesses Web3 interface on Sepolia testnet or mainnet nodes.</div>
+                  <div className="step-title">1. Connect Your Account</div>
+                  <div className="step-desc">Open the app with your secure digital wallet. No mountains of paperwork or bank branch queues.</div>
                 </div>
               </div>
 
               <div className="step-card">
                 <div className="step-number-bubble">2</div>
                 <div>
-                  <div className="step-title">Select Asset & Corridor</div>
-                  <div className="step-desc">Choose DGX stablecoin or synthetic assets (Eagle Gold / Fly Crude Oil).</div>
+                  <div className="step-title">2. Choose What to Pay</div>
+                  <div className="step-desc">Enter your invoice amount in USD or local currency and pick your overseas supplier desk.</div>
                 </div>
               </div>
 
               <div className="step-card">
                 <div className="step-number-bubble">3</div>
                 <div>
-                  <div className="step-title">AI Dynamic Rate Evaluation</div>
-                  <div className="step-desc">Off-chain AI models calculate corridor health, risk index, and borrow parameters.</div>
+                  <div className="step-title">3. Guaranteed Transparent Rates</div>
+                  <div className="step-desc">Our automated engine locks in real-time exchange rates. You see the exact amount delivered before confirming.</div>
                 </div>
               </div>
 
               <div className="step-card">
                 <div className="step-number-bubble">4</div>
                 <div>
-                  <div className="step-title">Atomic Smart Contract Mint & Lock</div>
-                  <div className="step-desc">Solidity contracts lock overcollateralized reserves and release minted tokens.</div>
+                  <div className="step-title">4. Direct One-Click Payment</div>
+                  <div className="step-desc">No multi-hop routing or hidden correspondent fees. Funds are protected in audited digital escrow.</div>
                 </div>
               </div>
 
               <div className="step-card">
                 <div className="step-number-bubble">5</div>
                 <div>
-                  <div className="step-title">Omnichain Settlement</div>
-                  <div className="step-desc">Bypasses SWIFT correspondent banks to credit Japanese suppliers instantly.</div>
+                  <div className="step-title">5. Supplier Receives Funds in Seconds</div>
+                  <div className="step-desc">Your supplier in Tokyo is credited immediately. Invoices are cleared and your shipments are released on time.</div>
                 </div>
               </div>
             </div>

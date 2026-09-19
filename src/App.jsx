@@ -23,7 +23,10 @@ import {
   ShieldAlert, 
   Send,
   Menu,
-  X
+  X,
+  Clock,
+  DollarSign,
+  AlertTriangle
 } from 'lucide-react';
 import './App.css';
 
@@ -220,10 +223,10 @@ export default function App() {
         </div>
 
         <nav className="nav-links">
-          <a href="#playground" className="nav-link-item active">DeFi Portal</a>
-          <a href="#tokens" className="nav-link-item">Tokens & Synthetics</a>
-          <a href="#architecture" className="nav-link-item">AI Engine & Specs</a>
-          <a href="#metrics" className="nav-link-item">Corridor Metrics</a>
+          <a href="#problems" className="nav-link-item">Why DRAGO X</a>
+          <a href="#playground" className="nav-link-item active">Try the App</a>
+          <a href="#tokens" className="nav-link-item">Currencies & Synthetics</a>
+          <a href="#architecture" className="nav-link-item">How It Works</a>
         </nav>
 
         <div className="nav-actions">
@@ -255,12 +258,20 @@ export default function App() {
       <div className={`mobile-nav-drawer ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-nav-links">
           <a 
+            href="#problems" 
+            className="mobile-nav-link-item"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <AlertTriangle size={18} color="#E11D48" />
+            <span>Why DRAGO X (Problems We Fix)</span>
+          </a>
+          <a 
             href="#playground" 
             className="mobile-nav-link-item"
             onClick={() => setMobileMenuOpen(false)}
           >
             <Zap size={18} color="var(--color-indigo)" />
-            <span>DeFi Portal & Simulator</span>
+            <span>Try The Simulator</span>
           </a>
           <a 
             href="#tokens" 
@@ -268,7 +279,7 @@ export default function App() {
             onClick={() => setMobileMenuOpen(false)}
           >
             <Layers size={18} color="var(--color-cyan)" />
-            <span>10-Token Universe & Synthetics</span>
+            <span>Currencies & Synthetics</span>
           </a>
           <a 
             href="#architecture" 
@@ -276,7 +287,7 @@ export default function App() {
             onClick={() => setMobileMenuOpen(false)}
           >
             <Cpu size={18} color="var(--color-emerald)" />
-            <span>AI Risk Engine & 7-Step Specs</span>
+            <span>How It Works (7-Step Flow)</span>
           </a>
         </div>
 
@@ -315,45 +326,42 @@ export default function App() {
             </div>
 
             <h1 className="hero-headline">
-              Settle Global Invoices in <span className="text-gradient">Seconds</span>, Not Days.
+              Stop Losing 5% on Wire Fees. Settle Invoices in <span className="text-gradient">Seconds</span>.
             </h1>
 
             <p className="hero-description">
-              DRAGO X empowers African SMEs and trade enterprises to eliminate 3–5% banking FX drag and 5–7 day payment lockups with <strong>DGX</strong>, the zero-base-rate USD stablecoin designed for the Africa–Japan trade corridor.
+              Tired of waiting 5 to 7 days for international wire transfers while banks eat 3% to 5% of your profit? DRAGO X helps African import-export businesses pay suppliers in Japan instantly at guaranteed rates using <strong>DGX</strong>.
             </p>
 
             <div className="hero-stats-strip">
               <div className="hero-stat-unit">
                 <span className="hero-stat-number text-gradient-emerald">1.8s</span>
-                <span className="hero-stat-desc">Atomic Settlement</span>
+                <span className="hero-stat-desc">Instant Delivery</span>
               </div>
               <div style={{ width: 1, background: '#E2E8F0' }} />
               <div className="hero-stat-unit">
                 <span className="hero-stat-number text-gradient">3–5%</span>
-                <span className="hero-stat-desc">FX Spread Saved</span>
+                <span className="hero-stat-desc">Your Margin Saved</span>
               </div>
               <div style={{ width: 1, background: '#E2E8F0' }} />
               <div className="hero-stat-unit">
-                <span className="hero-stat-number text-gradient-amber">0.0%</span>
-                <span className="hero-stat-desc">Base Borrow Rate</span>
+                <span className="hero-stat-number text-gradient-amber">0%</span>
+                <span className="hero-stat-desc">Hidden Bank Fees</span>
               </div>
             </div>
 
             <div className="hero-cta-group">
-              <a href="#playground" className="btn-colorful">
-                Launch Corridor App
+              <a href="#problems" className="btn-colorful">
+                See How We Save You Money
                 <ChevronRight size={18} />
               </a>
-              <button 
+              <a 
+                href="#playground"
                 className="btn-minimal"
-                onClick={() => {
-                  setActiveTab('oracle');
-                  document.getElementById('playground')?.scrollIntoView({ behavior: 'smooth' });
-                }}
               >
-                <Cpu size={18} color="var(--color-indigo)" />
-                Inspect AI Oracle
-              </button>
+                <Zap size={18} color="var(--color-indigo)" />
+                Try Interactive Demo
+              </a>
             </div>
           </div>
 
@@ -424,37 +432,180 @@ export default function App() {
         </div>
       </section>
 
+      {/* 4B. WE UNDERSTAND YOUR FRUSTRATION — THE PROBLEMS & OUR FIXES */}
+      <section id="problems" className="problems-section scroll-reveal">
+        <div className="section-header-center">
+          <div className="section-eyebrow" style={{ color: '#E11D48' }}>
+            <AlertTriangle size={16} />
+            <span>We Know Cross-Border Trade Is Broken</span>
+          </div>
+          <h2 className="section-title">
+            The Problems You Face Every Day — And How We Solve Them
+          </h2>
+          <p className="section-subtitle">
+            If you run an import-export business or SME, you shouldn't have to sacrifice hard-earned profits to bank fees or lose deals waiting days for wire transfers.
+          </p>
+        </div>
+
+        <div className="problems-grid">
+          {/* Problem 1: FX Bleed */}
+          <div className="glass-card problem-card">
+            <div>
+              <div className="problem-header">
+                <div className="problem-icon-circle red">
+                  <DollarSign size={22} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: 4 }}>Heavy Currency (FX) Losses</h3>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>The Middleman Cut</span>
+                </div>
+              </div>
+
+              <div className="pain-point-box">
+                <div className="pain-point-label">The Problem You Face:</div>
+                <div className="pain-point-desc">
+                  When you convert your local money to USD and then into JPY to pay overseas suppliers, banks and brokers take <strong>3% to 5%</strong> at every step. That is pure profit stolen before your goods even ship.
+                </div>
+              </div>
+            </div>
+
+            <div className="solution-box">
+              <div className="solution-label">
+                <CheckCircle2 size={14} />
+                <span>How DRAGO X Fixes It:</span>
+              </div>
+              <div className="solution-desc">
+                We remove the greedy middlemen. You mint and send <strong>DGX</strong> directly to your supplier at guaranteed rates, keeping that <strong>3% to 5% margin in your business</strong>.
+              </div>
+            </div>
+          </div>
+
+          {/* Problem 2: Slow Settlement */}
+          <div className="glass-card problem-card card-time">
+            <div>
+              <div className="problem-header">
+                <div className="problem-icon-circle amber">
+                  <Clock size={22} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: 4 }}>Painfully Slow 5–7 Day Transfers</h3>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Frozen Working Capital</span>
+                </div>
+              </div>
+
+              <div className="pain-point-box">
+                <div className="pain-point-label" style={{ color: '#B45309' }}>The Problem You Face:</div>
+                <div className="pain-point-desc" style={{ color: '#78350F' }}>
+                  Traditional SWIFT wire transfers hop through multiple correspondent banks across time zones. Your funds get trapped for nearly a week, shipments get delayed at ports, and suppliers grow impatient.
+                </div>
+              </div>
+            </div>
+
+            <div className="solution-box">
+              <div className="solution-label">
+                <CheckCircle2 size={14} />
+                <span>How DRAGO X Fixes It:</span>
+              </div>
+              <div className="solution-desc">
+                Settlements become instant. With atomic digital rails, payments reach your Japanese supplier in <strong>under 2 seconds</strong>. No frozen capital, no waiting.
+              </div>
+            </div>
+          </div>
+
+          {/* Problem 3: Volatility & Shortages */}
+          <div className="glass-card problem-card card-volatility">
+            <div>
+              <div className="problem-header">
+                <div className="problem-icon-circle indigo">
+                  <ShieldAlert size={22} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: 4 }}>Currency Swings & Dollar Scarcity</h3>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Unpredictable Costs</span>
+                </div>
+              </div>
+
+              <div className="pain-point-box">
+                <div className="pain-point-label" style={{ color: '#4338CA' }}>The Problem You Face:</div>
+                <div className="pain-point-desc" style={{ color: '#312E81' }}>
+                  Emerging market currencies fluctuate wildly. Often, commercial banks simply run out of physical USD, making it impossible to pay overseas bills on time.
+                </div>
+              </div>
+            </div>
+
+            <div className="solution-box">
+              <div className="solution-label">
+                <CheckCircle2 size={14} />
+                <span>How DRAGO X Fixes It:</span>
+              </div>
+              <div className="solution-desc">
+                Access dependable 1:1 digital dollars (DGX) and digital yen (DGZ) on-demand 24/7. Your pricing stays steady and protected from local currency devaluation.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2-Part Strategy Explanation Banner */}
+        <div className="strategy-banner-card">
+          <div className="strategy-part">
+            <div className="badge-pill badge-emerald" style={{ width: 'fit-content' }}>
+              <Zap size={14} />
+              <span>Step 1: The Urgent Market Solution (Live Today)</span>
+            </div>
+            <h4 style={{ fontSize: '1.3rem', color: 'var(--text-dark)' }}>
+              Solving the Africa–Japan Trade Corridor First
+            </h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+              Instead of building a vague platform for everyone, we are solving one urgent, real-world problem: helping African businesses buying cars, machinery, and equipment from Japan settle their invoices instantly using <strong>DGX</strong>. Tested with 40 passing tests and trusted by a growing waitlist of 150+ enterprises.
+            </p>
+          </div>
+
+          <div className="strategy-part" style={{ borderLeft: '1px solid #E2E8F0', paddingLeft: 24 }}>
+            <div className="badge-pill badge-indigo" style={{ width: 'fit-content' }}>
+              <Layers size={14} />
+              <span>Step 2: The Global Expansion (Future Roadmap)</span>
+            </div>
+            <h4 style={{ fontSize: '1.3rem', color: 'var(--text-dark)' }}>
+              Expanding into 10-Tokens & Commodity Hedging
+            </h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+              As our trade network expands, companies will be able to hedge fuel and raw material price spikes through on-chain Gold (Drago Eagle) and Crude Oil (Drago Fly) synthetics, powered by real-time automated AI risk modeling.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* 5. INTERACTIVE LIVE DEMO PLAYGROUND */}
       <section id="playground" className="demo-section scroll-reveal">
         <div className="section-header-center">
           <div className="section-eyebrow">
             <Zap size={16} />
-            <span>Interactive Web3 Sandbox</span>
+            <span>Interactive Live Demo</span>
           </div>
           <h2 className="section-title">
-            Test the Protocol in Real Time
+            See How Easy It Is to Pay a Supplier
           </h2>
           <p className="section-subtitle">
-            Simulate instant minting, atomic cross-border payments, dynamic AI risk adjustments, and real-world commodity synthetics.
+            Try sending a simulated payment below. See how fast your supplier receives Japanese Yen and how much money you save compared to a regular bank wire.
           </p>
         </div>
 
         {/* Tab Switcher Pills */}
         <div className="interactive-tabs-row">
           <button 
-            className={`tab-btn ${activeTab === 'mint' ? 'active' : ''}`}
-            onClick={() => setActiveTab('mint')}
-          >
-            <ArrowRightLeft size={16} />
-            <span>1. Mint DGX (USD Stablecoin)</span>
-          </button>
-
-          <button 
             className={`tab-btn ${activeTab === 'transfer' ? 'active' : ''}`}
             onClick={() => setActiveTab('transfer')}
           >
             <Globe2 size={16} />
-            <span>2. Pay Tokyo Supplier</span>
+            <span>1. Send Payment to Supplier</span>
+          </button>
+
+          <button 
+            className={`tab-btn ${activeTab === 'mint' ? 'active' : ''}`}
+            onClick={() => setActiveTab('mint')}
+          >
+            <ArrowRightLeft size={16} />
+            <span>2. Load Digital Dollars (DGX)</span>
           </button>
 
           <button 
@@ -462,7 +613,7 @@ export default function App() {
             onClick={() => setActiveTab('oracle')}
           >
             <Cpu size={16} />
-            <span>3. AI Oracle & Rates</span>
+            <span>3. Live Automated Exchange Rate</span>
           </button>
 
           <button 
@@ -470,7 +621,7 @@ export default function App() {
             onClick={() => setActiveTab('synthetics')}
           >
             <Layers size={16} />
-            <span>4. Commodity Synthetics</span>
+            <span>4. Commodity Price Protection</span>
           </button>
         </div>
 
@@ -484,18 +635,18 @@ export default function App() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div className="badge-pill badge-emerald">
                       <CircleDollarSign size={14} />
-                      <span>Zero Base Rate</span>
+                      <span>Zero Extra Fees</span>
                     </div>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Collateral: 150% Overcollateralized</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Fully Backed 1:1 with USD</span>
                   </div>
                   <span style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', color: 'var(--color-indigo)' }}>
-                    Wallet: {walletConnected ? 'Connected' : 'Demo Mode'}
+                    Status: Ready
                   </span>
                 </div>
 
-                <h3 style={{ fontSize: '1.45rem', marginBottom: 10 }}>Mint DGX Stablecoins</h3>
+                <h3 style={{ fontSize: '1.45rem', marginBottom: 10 }}>Load Your DGX Trade Balance</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: 24 }}>
-                  Lock USDC or verified treasury reserves to mint DGX at an algorithmic 1:1 USD peg with zero base interest drag.
+                  Convert your funds into DGX at a transparent 1:1 dollar rate. Use DGX whenever you need to pay suppliers without losing money on foreign exchange markups.
                 </p>
 
                 <form onSubmit={handleMintSubmit}>
@@ -572,21 +723,23 @@ export default function App() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                   <div className="badge-pill badge-cyan">
                     <Globe2 size={14} />
-                    <span>Cross-Border Direct</span>
+                    <span>Direct Payment</span>
                   </div>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Settlement: ~1.8 Seconds</span>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--color-emerald)', fontWeight: 600 }}>
+                    Settles in Under 2 Seconds
+                  </span>
                 </div>
 
-                <h3 style={{ fontSize: '1.45rem', marginBottom: 10 }}>Pay Tokyo Enterprise Supplier</h3>
+                <h3 style={{ fontSize: '1.45rem', marginBottom: 10 }}>Pay Your Overseas Supplier</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: 24 }}>
-                  Send DGX from Nairobi or Lagos. The Japanese supplier receives automated JPY conversion or native DGZ without correspondent bank deduction.
+                  Send your payment from Nairobi, Lagos, or Johannesburg. Your supplier in Japan receives exact Japanese Yen instantly with zero deductions from intermediate banks.
                 </p>
 
                 <form onSubmit={handleTransferSubmit}>
                   <div className="form-group">
                     <div className="form-label-row">
-                      <label className="form-label">Transfer Amount (DGX)</label>
-                      <span className="form-sublabel">Available: ${dgxBalance.toLocaleString()} DGX</span>
+                      <label className="form-label">Invoice Amount to Pay (DGX / USD)</label>
+                      <span className="form-sublabel">Your Balance: ${dgxBalance.toLocaleString()} DGX</span>
                     </div>
                     <div className="input-box-wrapper">
                       <input 

@@ -172,7 +172,7 @@ export default function App() {
           </div>
           <div className="ticker-item">
             <span className="ticker-dot" />
-            <span>AFRICA–JAPAN CORRIDOR FX SAVINGS: <strong>4.2% AVERAGE</strong></span>
+            <span>AFRICA-JAPAN CORRIDOR FX SAVINGS: <strong>4.2% AVERAGE</strong></span>
           </div>
           <div className="ticker-item">
             <span className="ticker-dot" />
@@ -193,7 +193,7 @@ export default function App() {
           </div>
           <div className="ticker-item">
             <span className="ticker-dot" />
-            <span>AFRICA–JAPAN CORRIDOR FX SAVINGS: <strong>4.2% AVERAGE</strong></span>
+            <span>AFRICA-JAPAN CORRIDOR FX SAVINGS: <strong>4.2% AVERAGE</strong></span>
           </div>
           <div className="ticker-item">
             <span className="ticker-dot" />
@@ -321,7 +321,7 @@ export default function App() {
               </div>
               <div className="badge-pill badge-cyan">
                 <Globe2 size={14} />
-                <span>Africa – Tokyo Direct Route</span>
+                <span>Africa to Tokyo Direct Route</span>
               </div>
             </div>
 
@@ -340,7 +340,7 @@ export default function App() {
               </div>
               <div style={{ width: 1, background: '#E2E8F0' }} />
               <div className="hero-stat-unit">
-                <span className="hero-stat-number text-gradient">3–5%</span>
+                <span className="hero-stat-number text-gradient">3-5%</span>
                 <span className="hero-stat-desc">Your Margin Saved</span>
               </div>
               <div style={{ width: 1, background: '#E2E8F0' }} />
@@ -432,7 +432,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* 4B. WE UNDERSTAND YOUR FRUSTRATION — THE PROBLEMS & OUR FIXES */}
+      {/* 4B. WE UNDERSTAND YOUR FRUSTRATION - THE PROBLEMS & OUR FIXES */}
       <section id="problems" className="problems-section scroll-reveal">
         <div className="section-header-center">
           <div className="section-eyebrow" style={{ color: '#E11D48' }}>
@@ -440,7 +440,7 @@ export default function App() {
             <span>We Know Cross-Border Trade Is Broken</span>
           </div>
           <h2 className="section-title">
-            The Problems You Face Every Day — And How We Solve Them
+            The Problems You Face Every Day: And How We Solve Them
           </h2>
           <p className="section-subtitle">
             If you run an import-export business or SME, you shouldn't have to sacrifice hard-earned profits to bank fees or lose deals waiting days for wire transfers.
@@ -488,7 +488,7 @@ export default function App() {
                   <Clock size={22} />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: 4 }}>Painfully Slow 5–7 Day Transfers</h3>
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: 4 }}>Painfully Slow 5 to 7 Day Transfers</h3>
                   <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Frozen Working Capital</span>
                 </div>
               </div>
@@ -553,7 +553,7 @@ export default function App() {
               <span>Step 1: The Urgent Market Solution (Live Today)</span>
             </div>
             <h4 style={{ fontSize: '1.3rem', color: 'var(--text-dark)' }}>
-              Solving the Africa–Japan Trade Corridor First
+              Solving the Africa-Japan Trade Corridor First
             </h4>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
               Instead of building a vague platform for everyone, we are solving one urgent, real-world problem: helping African businesses buying cars, machinery, and equipment from Japan settle their invoices instantly using <strong>DGX</strong>. Tested with 40 passing tests and trusted by a growing waitlist of 150+ enterprises.
@@ -889,7 +889,7 @@ export default function App() {
                         <span className="step-title">Drago Eagle (DGE)</span>
                         <span style={{ fontWeight: 800, color: 'var(--text-dark)' }}>$2,745.20 / oz</span>
                       </div>
-                      <p className="step-desc">Synthetic spot gold token tracking XAU/USD. 15–30% yield vault APY.</p>
+                      <p className="step-desc">Synthetic spot gold token tracking XAU/USD. 15-30% yield vault APY.</p>
                     </div>
                   </div>
 
@@ -1067,7 +1067,7 @@ export default function App() {
                   <div className="token-ticker-badge">DGF</div>
                   <span className="token-name-sub">Drago Fire • Yield USD</span>
                 </div>
-                <div className="badge-pill badge-amber">5–8% APY</div>
+                <div className="badge-pill badge-amber">5-8% APY</div>
               </div>
               <p className="token-card-body">
                 Yield-bearing USD stablecoin. Automatically accrues protocol revenue shares from trade finance routing fees while burning excess yield to hold $1.00.
@@ -1095,7 +1095,7 @@ export default function App() {
             </div>
             <div className="token-card-footer">
               <span>200% Collateral</span>
-              <strong style={{ color: '#D97706' }}>15–30% Yield</strong>
+              <strong style={{ color: '#D97706' }}>15-30% Yield</strong>
             </div>
           </div>
 
@@ -1115,7 +1115,7 @@ export default function App() {
             </div>
             <div className="token-card-footer">
               <span>Commodity Hedge</span>
-              <strong style={{ color: 'var(--color-indigo)' }}>20–40% APY</strong>
+              <strong style={{ color: 'var(--color-indigo)' }}>20-40% APY</strong>
             </div>
           </div>
         </div>

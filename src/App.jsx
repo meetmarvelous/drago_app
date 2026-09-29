@@ -97,7 +97,7 @@ export default function App() {
         particleCount: 40,
         spread: 60,
         origin: { y: 0.1, x: 0.9 },
-        colors: ['#10B981', '#06B6D4', '#6366F1']
+        colors: ['#7B1113', '#D4AF37', '#B38F2D', '#9E1B1E']
       });
     }
   };
@@ -118,7 +118,7 @@ export default function App() {
         particleCount: 80,
         spread: 80,
         origin: { y: 0.6 },
-        colors: ['#10B981', '#06B6D4', '#F59E0B']
+        colors: ['#7B1113', '#D4AF37', '#B38F2D', '#F3C969']
       });
       setTimeout(() => setMintSuccess(false), 4000);
     }, 1400);
@@ -147,7 +147,7 @@ export default function App() {
         particleCount: 90,
         spread: 90,
         origin: { y: 0.5 },
-        colors: ['#6366F1', '#10B981', '#EC4899']
+        colors: ['#7B1113', '#D4AF37', '#4A0E17', '#F3C969']
       });
     }, 1600);
   };
@@ -214,7 +214,7 @@ export default function App() {
       <header className="navbar">
         <div className="nav-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <div className="brand-icon-box">
-            <ShieldCheck size={26} strokeWidth={2.4} />
+            <img src="/drago_logo.png" alt="DRAGO X Logo" className="brand-icon-img" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <span className="brand-title">DRAGO X</span>
@@ -262,7 +262,7 @@ export default function App() {
             className="mobile-nav-link-item"
             onClick={() => setMobileMenuOpen(false)}
           >
-            <AlertTriangle size={18} color="#E11D48" />
+            <AlertTriangle size={18} color="var(--color-crimson)" />
             <span>Why DRAGO X (Problems We Fix)</span>
           </a>
           <a 
@@ -270,7 +270,7 @@ export default function App() {
             className="mobile-nav-link-item"
             onClick={() => setMobileMenuOpen(false)}
           >
-            <Zap size={18} color="var(--color-indigo)" />
+            <Zap size={18} color="var(--color-gold)" />
             <span>Try The Simulator</span>
           </a>
           <a 
@@ -278,7 +278,7 @@ export default function App() {
             className="mobile-nav-link-item"
             onClick={() => setMobileMenuOpen(false)}
           >
-            <Layers size={18} color="var(--color-cyan)" />
+            <Layers size={18} color="var(--color-crimson)" />
             <span>Currencies & Synthetics</span>
           </a>
           <a 
@@ -286,8 +286,8 @@ export default function App() {
             className="mobile-nav-link-item"
             onClick={() => setMobileMenuOpen(false)}
           >
-            <Cpu size={18} color="var(--color-emerald)" />
-            <span>How It Works (7-Step Flow)</span>
+            <Cpu size={18} color="var(--color-gold)" />
+            <span>How It Works (5-Step Flow)</span>
           </a>
         </div>
 
@@ -435,7 +435,7 @@ export default function App() {
       {/* 4B. WE UNDERSTAND YOUR FRUSTRATION - THE PROBLEMS & OUR FIXES */}
       <section id="problems" className="problems-section scroll-reveal">
         <div className="section-header-center">
-          <div className="section-eyebrow" style={{ color: '#E11D48' }}>
+          <div className="section-eyebrow" style={{ color: 'var(--color-crimson)' }}>
             <AlertTriangle size={16} />
             <span>We Know Cross-Border Trade Is Broken</span>
           </div>
@@ -494,8 +494,8 @@ export default function App() {
               </div>
 
               <div className="pain-point-box">
-                <div className="pain-point-label" style={{ color: '#B45309' }}>The Problem You Face:</div>
-                <div className="pain-point-desc" style={{ color: '#78350F' }}>
+                <div className="pain-point-label" style={{ color: '#B38F2D' }}>The Problem You Face:</div>
+                <div className="pain-point-desc" style={{ color: '#5C470D' }}>
                   Traditional SWIFT wire transfers hop through multiple correspondent banks across time zones. Your funds get trapped for nearly a week, shipments get delayed at ports, and suppliers grow impatient.
                 </div>
               </div>
@@ -526,8 +526,8 @@ export default function App() {
               </div>
 
               <div className="pain-point-box">
-                <div className="pain-point-label" style={{ color: '#4338CA' }}>The Problem You Face:</div>
-                <div className="pain-point-desc" style={{ color: '#312E81' }}>
+                <div className="pain-point-label" style={{ color: 'var(--color-crimson)' }}>The Problem You Face:</div>
+                <div className="pain-point-desc" style={{ color: '#4A0E17' }}>
                   Emerging market currencies fluctuate wildly. Often, commercial banks simply run out of physical USD, making it impossible to pay overseas bills on time.
                 </div>
               </div>
@@ -775,10 +775,10 @@ export default function App() {
                       <ShieldCheck size={22} />
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#065F46' }}>
+                      <div style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--color-crimson)' }}>
                         Supplier Receives: ¥{(Math.round(parseFloat(transferAmount || 0) * fxRate)).toLocaleString()} JPY
                       </div>
-                      <div style={{ fontSize: '0.78rem', color: '#047857' }}>
+                      <div style={{ fontSize: '0.78rem', color: '#B38F2D' }}>
                         Saved <strong>~${(parseFloat(transferAmount || 0) * 0.042).toFixed(2)} USD</strong> in SWIFT intermediary bank cuts
                       </div>
                     </div>
@@ -877,9 +877,17 @@ export default function App() {
                 </div>
 
                 <h3 style={{ fontSize: '1.45rem', marginBottom: 10 }}>Trade Real-World Commodities</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: 24 }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: 20 }}>
                   Mint and hedge physical commodity exposures like Gold and Crude Oil entirely on-chain without brokerage or futures accounts.
                 </p>
+
+                <div style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 20, border: '1.5px solid rgba(212, 175, 55, 0.35)', boxShadow: '0 8px 24px rgba(123, 17, 19, 0.08)' }}>
+                  <img 
+                    src="/drago_synthetic.jpg" 
+                    alt="DRAGO Real-World Asset Gold and Synthetic Commodities" 
+                    style={{ width: '100%', height: 160, objectFit: 'cover', display: 'block' }} 
+                  />
+                </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <div className="step-card">
@@ -962,9 +970,9 @@ export default function App() {
                 alt="DRAGO X Crystal Asset Core" 
                 style={{ width: '100%', height: 180, objectFit: 'cover' }}
               />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(15, 23, 42, 0.75) 100%)', display: 'flex', alignItems: 'flex-end', padding: 18 }}>
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(74, 14, 23, 0.85) 100%)', display: 'flex', alignItems: 'flex-end', padding: 18 }}>
                 <div>
-                  <span style={{ fontSize: '0.72rem', background: '#10B981', color: '#FFF', fontWeight: 700, padding: '2px 8px', borderRadius: 6 }}>
+                  <span style={{ fontSize: '0.72rem', background: 'var(--color-crimson)', color: '#FFFDF0', fontWeight: 700, padding: '2px 8px', borderRadius: 6, border: '1px solid rgba(212, 175, 55, 0.4)' }}>
                     DUAL TOKEN SUITE
                   </span>
                   <div style={{ color: '#FFF', fontWeight: 700, fontSize: '0.96rem', marginTop: 4 }}>
@@ -976,12 +984,12 @@ export default function App() {
 
             {/* Recent Transaction Log / Live Settlement Preview */}
             {transferReceipt ? (
-              <div style={{ background: '#ECFDF5', border: '1.5px solid #10B981', borderRadius: 18, padding: 18 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#065F46', fontWeight: 700, fontSize: '0.92rem', marginBottom: 8 }}>
-                  <CheckCircle2 size={18} color="#10B981" />
+              <div style={{ background: '#FFFDF0', border: '1.5px solid var(--color-gold)', borderRadius: 18, padding: 18, boxShadow: '0 4px 16px rgba(123, 17, 19, 0.08)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-crimson)', fontWeight: 700, fontSize: '0.92rem', marginBottom: 8 }}>
+                  <CheckCircle2 size={18} color="var(--color-crimson)" />
                   <span>Instant Cross-Border Settlement Complete</span>
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#047857', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ fontSize: '0.8rem', color: '#4A0E17', display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <div>Sent: <strong>${transferReceipt.sentDgx} DGX</strong></div>
                   <div>Settled: <strong>¥{transferReceipt.receivedJpy.toLocaleString()} JPY</strong></div>
                   <div>Target: <strong>{transferReceipt.corridor}</strong></div>
@@ -991,7 +999,7 @@ export default function App() {
             ) : (
               <div style={{ background: '#FFFFFF', border: '1px solid var(--border-light)', borderRadius: 18, padding: 18 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-dark)', fontWeight: 600, fontSize: '0.88rem', marginBottom: 6 }}>
-                  <Activity size={16} color="var(--color-indigo)" />
+                  <Activity size={16} color="var(--color-gold)" />
                   <span>Corridor Route Ready</span>
                 </div>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
@@ -1202,7 +1210,7 @@ export default function App() {
             <div style={{ maxWidth: 420 }}>
               <div className="nav-brand" style={{ marginBottom: 14 }}>
                 <div className="brand-icon-box">
-                  <ShieldCheck size={26} strokeWidth={2.4} />
+                  <img src="/drago_logo.png" alt="DRAGO X Logo" className="brand-icon-img" />
                 </div>
                 <span className="brand-title">DRAGO X</span>
               </div>
@@ -1238,7 +1246,7 @@ export default function App() {
                 <span>Email: dragoxprotocol@proton.me</span>
                 <div style={{ marginTop: 8 }}>
                   <button className="btn-minimal" onClick={copyAddress} style={{ fontSize: '0.8rem', padding: '8px 14px' }}>
-                    {copied ? <Check size={14} color="#10B981" /> : <Copy size={14} />}
+                    {copied ? <Check size={14} color="var(--color-crimson)" /> : <Copy size={14} />}
                     <span>{copied ? 'Testnet Address Copied' : 'Copy Testnet Contract'}</span>
                   </button>
                 </div>

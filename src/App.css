@@ -9,8 +9,8 @@
 
 /* 1. TOP ANNOUNCEMENT TICKER (Small Words Scrolling Carousel) */
 .ticker-container {
-  background: linear-gradient(90deg, #0F172A 0%, #1E293B 100%);
-  color: #FFFFFF;
+  background: linear-gradient(90deg, #4A0E17 0%, #7B1113 50%, #4A0E17 100%);
+  color: #FFFDF0;
   padding: 8px 0;
   overflow: hidden;
   font-size: 0.78rem;
@@ -19,7 +19,7 @@
   white-space: nowrap;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
 }
 
 .ticker-track {
@@ -43,7 +43,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-cyan);
+  background: var(--color-gold);
 }
 
 @keyframes ticker-slide {
@@ -61,10 +61,10 @@
   top: 0;
   z-index: 100;
   padding: 16px 40px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -82,30 +82,40 @@
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: var(--grad-hero);
+  background: var(--grad-crimson);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  color: var(--color-gold);
+  box-shadow: 0 4px 14px rgba(123, 17, 19, 0.25);
   transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.brand-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .nav-brand:hover .brand-icon-box {
   transform: rotate(-6deg) scale(1.05);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
 }
 
 .brand-title {
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--text-dark);
+  color: var(--color-crimson);
 }
 
 .brand-tag {
   font-size: 0.68rem;
-  background: #EEF2FF;
-  color: #4F46E5;
+  background: #FFFDF0;
+  color: #B38F2D;
+  border: 1px solid rgba(212, 175, 55, 0.35);
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 6px;
@@ -130,7 +140,7 @@
 }
 
 .nav-link-item:hover, .nav-link-item.active {
-  color: var(--text-dark);
+  color: var(--color-crimson);
   font-weight: 600;
 }
 
@@ -464,16 +474,16 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-top: 4px solid #F43F5E;
+  border-top: 4px solid var(--color-crimson);
   background: #FFFFFF;
 }
 
 .problem-card.card-time {
-  border-top-color: #F59E0B;
+  border-top-color: var(--color-gold);
 }
 
 .problem-card.card-volatility {
-  border-top-color: #6366F1;
+  border-top-color: var(--color-crimson-dark);
 }
 
 .problem-header {
@@ -494,23 +504,26 @@
 }
 
 .problem-icon-circle.red {
-  background: #FFE4E6;
-  color: #E11D48;
+  background: #FDF2F2;
+  color: var(--color-crimson);
+  border: 1px solid rgba(123, 17, 19, 0.2);
 }
 
 .problem-icon-circle.amber {
-  background: #FEF3C7;
-  color: #D97706;
+  background: #FFFDF0;
+  color: var(--color-gold-deep);
+  border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .problem-icon-circle.indigo {
-  background: #EEF2FF;
-  color: #4F46E5;
+  background: #FDF2F2;
+  color: var(--color-crimson-dark);
+  border: 1px solid rgba(74, 14, 23, 0.2);
 }
 
 .pain-point-box {
-  background: #FFF1F2;
-  border: 1px solid rgba(244, 63, 94, 0.2);
+  background: #FDF2F2;
+  border: 1px solid rgba(123, 17, 19, 0.18);
   border-radius: 14px;
   padding: 16px;
   margin-bottom: 20px;
@@ -521,21 +534,22 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #BE123C;
+  color: var(--color-crimson);
   margin-bottom: 4px;
 }
 
 .pain-point-desc {
   font-size: 0.88rem;
-  color: #881337;
+  color: #4A0E17;
   line-height: 1.5;
 }
 
 .solution-box {
-  background: #ECFDF5;
-  border: 1.5px solid rgba(16, 185, 129, 0.35);
+  background: #FFFDF0;
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
   border-radius: 14px;
   padding: 16px;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.08);
 }
 
 .solution-label {
@@ -543,7 +557,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #047857;
+  color: var(--color-gold-deep);
   margin-bottom: 4px;
   display: flex;
   align-items: center;
@@ -552,7 +566,7 @@
 
 .solution-desc {
   font-size: 0.88rem;
-  color: #064E3B;
+  color: var(--text-dark);
   font-weight: 600;
   line-height: 1.5;
 }
@@ -646,10 +660,10 @@
 }
 
 .tab-btn.active {
-  background: #0F172A;
-  color: #FFFFFF;
-  border-color: #0F172A;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.2);
+  background: var(--grad-crimson);
+  color: #FFFDF0;
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 4px 18px rgba(123, 17, 19, 0.28);
 }
 
 /* Playground Cards Grid */
@@ -716,8 +730,8 @@
 }
 
 .styled-input:focus {
-  border-color: var(--color-indigo);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
 }
 
 .input-token-tag {
@@ -788,26 +802,29 @@
 
 /* Savings highlight banner */
 .savings-callout {
-  background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
-  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, #FFFDF5 0%, #FFF9EB 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
   border-radius: 16px;
   padding: 16px 20px;
   display: flex;
   align-items: center;
   gap: 14px;
   margin-top: 18px;
+  box-shadow: 0 4px 14px rgba(123, 17, 19, 0.05);
 }
 
 .savings-icon-box {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #10B981;
-  color: #FFFFFF;
+  background: var(--grad-crimson);
+  color: var(--color-gold);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(123, 17, 19, 0.2);
 }
 
 /* 6. TOKEN ECOSYSTEM SHOWCASE (5 Stablecoins & 5 Synthetics Carousel) */
@@ -835,19 +852,19 @@
 }
 
 .token-card.stable-dgx {
-  border-top-color: var(--color-emerald);
+  border-top-color: var(--color-crimson);
 }
 .token-card.stable-dgz {
-  border-top-color: var(--color-cyan);
+  border-top-color: var(--color-gold);
 }
 .token-card.stable-dgf {
-  border-top-color: var(--color-amber);
+  border-top-color: var(--color-gold-deep);
 }
 .token-card.synth-gold {
-  border-top-color: #F59E0B;
+  border-top-color: var(--color-gold);
 }
 .token-card.synth-oil {
-  border-top-color: #6366F1;
+  border-top-color: var(--color-crimson-dark);
 }
 
 .token-card-header {

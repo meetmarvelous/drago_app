@@ -10,35 +10,44 @@
   
   /* Borders & Shadows */
   --border-light: rgba(226, 232, 240, 0.8);
-  --border-focus: rgba(99, 102, 241, 0.35);
+  --border-focus: rgba(212, 175, 55, 0.45);
   --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-  --shadow-card: 0 10px 30px -4px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
-  --shadow-hover: 0 20px 40px -6px rgba(99, 102, 241, 0.12), 0 8px 16px -4px rgba(15, 23, 42, 0.04);
-  --shadow-glow-emerald: 0 0 35px rgba(16, 185, 129, 0.25);
-  --shadow-glow-violet: 0 0 35px rgba(139, 92, 246, 0.25);
+  --shadow-card: 0 10px 30px -4px rgba(123, 17, 19, 0.07), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  --shadow-hover: 0 20px 40px -6px rgba(123, 17, 19, 0.16), 0 8px 16px -4px rgba(212, 175, 55, 0.15);
+  --shadow-glow-crimson: 0 0 35px rgba(123, 17, 19, 0.28);
+  --shadow-glow-gold: 0 0 35px rgba(212, 175, 55, 0.35);
 
-  /* Vibrant Accents */
+  /* Official Brand Colors (Crimson & Burnished Gold) */
+  --color-crimson-dark: #4A0E17;
+  --color-crimson: #7B1113;
+  --color-crimson-light: #9E1B1E;
+  --color-crimson-subtle: #FDF2F2;
+  --color-crimson-border: rgba(123, 17, 19, 0.2);
+
+  --color-gold-deep: #B38F2D;
+  --color-gold: #D4AF37;
+  --color-gold-bright: #F3C969;
+  --color-gold-light: #FFFDF0;
+  --color-gold-border: rgba(212, 175, 55, 0.3);
+
+  /* Secondary Accents */
   --color-emerald: #10B981;
   --color-emerald-light: #ECFDF5;
   --color-cyan: #06B6D4;
-  --color-cyan-light: #ECFEFF;
-  --color-indigo: #6366F1;
-  --color-violet: #8B5CF6;
-  --color-amber: #F59E0B;
-  --color-rose: #F43F5E;
+  --color-amber: #D97706;
   
   /* Text Colors */
-  --text-dark: #0F172A;
-  --text-body: #334155;
-  --text-muted: #64748B;
-  --text-light: #94A3B8;
+  --text-dark: #1A0B0E;
+  --text-body: #3F3335;
+  --text-muted: #756265;
+  --text-light: #A39294;
 
-  /* Gradients */
-  --grad-hero: linear-gradient(135deg, #10B981 0%, #06B6D4 50%, #6366F1 100%);
-  --grad-sunset: linear-gradient(135deg, #F59E0B 0%, #F43F5E 50%, #8B5CF6 100%);
-  --grad-violet: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-  --grad-emerald: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  --grad-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.6) 100%);
+  /* Premium Gradients */
+  --grad-hero: linear-gradient(135deg, #7B1113 0%, #A52A2A 35%, #D4AF37 80%, #F3C969 100%);
+  --grad-crimson: linear-gradient(135deg, #4A0E17 0%, #7B1113 60%, #9E1B1E 100%);
+  --grad-gold: linear-gradient(135deg, #B38F2D 0%, #D4AF37 50%, #F3C969 100%);
+  --grad-gold-text: linear-gradient(135deg, #B38F2D 0%, #D4AF37 40%, #FFE599 70%, #C59B27 100%);
+  --grad-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 242, 242, 0.6) 100%);
 
   /* Fonts */
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -66,7 +75,7 @@ body {
   line-height: 1.6;
 }
 
-/* Background Atmosphere (Clean White with Subtle Dynamic Light Spheres) */
+/* Background Atmosphere (Clean Minimalist White with Subtle Crimson & Gold Light Spheres) */
 .bg-mesh-canvas {
   position: fixed;
   top: 0;
@@ -76,10 +85,10 @@ body {
   z-index: -1;
   pointer-events: none;
   background: 
-    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.05) 0%, transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 65%, rgba(6, 182, 212, 0.05) 0%, transparent 55%),
-    radial-gradient(circle at 80% 85%, rgba(245, 158, 11, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 15% 15%, rgba(123, 17, 19, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 65%, rgba(123, 17, 19, 0.03) 0%, transparent 55%),
+    radial-gradient(circle at 80% 85%, rgba(212, 175, 55, 0.04) 0%, transparent 40%),
     #FFFFFF;
 }
 
@@ -88,9 +97,9 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(148, 163, 184, 0.18) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(123, 17, 19, 0.09) 1px, transparent 1px);
   background-size: 32px 32px;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 /* Typography styles */
@@ -109,8 +118,24 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
 }
 
+.text-gradient-gold {
+  background: var(--grad-gold-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.text-gradient-crimson {
+  background: var(--grad-crimson);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
 .text-gradient-amber {
-  background: var(--grad-sunset);
+  background: var(--grad-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -118,7 +143,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-gradient-emerald {
-  background: var(--grad-emerald);
+  background: linear-gradient(135deg, #7B1113 0%, #D4AF37 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -141,7 +166,7 @@ h1, h2, h3, h4, h5, h6 {
 .glass-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-hover);
-  border-color: rgba(99, 102, 241, 0.25);
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 /* Colorful Tag Badges */
@@ -157,22 +182,34 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.25s ease;
 }
 
+.badge-crimson {
+  background: #FDF2F2;
+  color: #7B1113;
+  border: 1px solid rgba(123, 17, 19, 0.25);
+}
+
+.badge-gold {
+  background: #FFFDF0;
+  color: #B38F2D;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
 .badge-emerald {
-  background: #ECFDF5;
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: #FDF2F2;
+  color: #7B1113;
+  border: 1px solid rgba(123, 17, 19, 0.25);
 }
 
 .badge-indigo {
-  background: #EEF2FF;
-  color: #4F46E5;
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: #FFFDF0;
+  color: #8C6D1F;
+  border: 1px solid rgba(212, 175, 55, 0.35);
 }
 
 .badge-cyan {
-  background: #ECFEFF;
-  color: #0891B2;
-  border: 1px solid rgba(6, 182, 212, 0.25);
+  background: #FFFDF0;
+  color: #7B1113;
+  border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .badge-amber {
@@ -196,9 +233,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Interactive Action Buttons */
 .btn-colorful {
-  background: var(--grad-hero);
+  background: linear-gradient(135deg, #7B1113 0%, #9E1B1E 40%, #B38F2D 100%);
   color: #FFFFFF;
-  border: none;
+  border: 1px solid rgba(212, 175, 55, 0.4);
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 600;
@@ -210,14 +247,15 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   gap: 10px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.28);
+  box-shadow: 0 6px 20px rgba(123, 17, 19, 0.25), 0 2px 6px rgba(212, 175, 55, 0.2);
   position: relative;
   overflow: hidden;
 }
 
 .btn-colorful:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 10px 28px rgba(6, 182, 212, 0.35);
+  background: linear-gradient(135deg, #9E1B1E 0%, #7B1113 50%, #D4AF37 100%);
+  box-shadow: 0 10px 28px rgba(123, 17, 19, 0.35), 0 0 18px rgba(212, 175, 55, 0.35);
 }
 
 .btn-colorful:active {

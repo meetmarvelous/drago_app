@@ -29,19 +29,29 @@ import {
   ArrowUpRight,
   Wallet,
   Info,
-  RotateCcw
+  RotateCcw,
+  Coins,
+  Flame,
+  TrendingUp,
+  Cpu,
+  Database,
+  Activity,
+  Lock,
+  Unlock,
+  BarChart3
 } from 'lucide-react';
 import './App.css';
 import { dragoApi } from './api/dragoApi.js';
 
 export default function App() {
-  // Navigation & UI State
+  // Navigation & Workspace Mode State
+  const [workspaceMode, setWorkspaceMode] = useState('trade'); // 'trade' | 'protocol'
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('pay'); // 'pay' | 'orders'
   const [backendStatus, setBackendStatus] = useState('connecting'); // 'live' | 'standby'
   const [copied, setCopied] = useState(false);
 
-  // Business Payment Simulator State
+  // Business Payment Simulator State (B2B Trade Portal)
   const [invoiceAmount, setInvoiceAmount] = useState('15000');
   const [supplierDesk, setSupplierDesk] = useState('Tokyo Heavy Machinery Ltd (Yokohama Port)');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -57,6 +67,37 @@ export default function App() {
   const [topUpAmount, setTopUpAmount] = useState('25000');
   const [topUpRail, setTopUpRail] = useState('M-Pesa Enterprise (Kenya)');
   const [isDepositing, setIsDepositing] = useState(false);
+
+  // ==========================================
+  // PROTOCOL & AI ASSETS HUB STATE (Web3 MVP)
+  // ==========================================
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('0x71a9f39c824e2b0284f1837e891b01a2c384e590');
+  const [walletNetwork, setWalletNetwork] = useState('Ethereum Sepolia Testnet');
+  const [protocolStep, setProtocolStep] = useState(1);
+  
+  // Balances in Web3 Wallet
+  const [stableBalances, setStableBalances] = useState({ dgx: 5000.00, dgz: 771000.00, eth: 2.45 });
+  const [syntheticBalances, setSyntheticBalances] = useState({ eagle: 1.25, fly: 45.00 });
+  const [stakedBalances, setStakedBalances] = useState({ dgs: 2500.00, drgx: 12000.00 });
+  const [earnedYield, setEarnedYield] = useState({ dgs: 38.45, drgx: 142.80 });
+
+  // Stablecoin Minting State
+  const [mintStableType, setMintStableType] = useState('DGX'); // 'DGX' | 'DGZ'
+  const [mintStableAmount, setMintStableAmount] = useState('1000');
+  const [mintStableRail, setMintStableRail] = useState('USDC Direct');
+  const [isMintingStable, setIsMintingStable] = useState(false);
+
+  // Synthetic RWA Minting State
+  const [mintSynthType, setMintSynthType] = useState('eagle'); // 'eagle' | 'fly'
+  const [mintSynthAmount, setMintSynthAmount] = useState('0.5');
+  const [isMintingSynth, setIsMintingSynth] = useState(false);
+
+  // Staking State
+  const [activeStakingPool, setActiveStakingPool] = useState('DGS'); // 'DGS' | 'DRGX'
+  const [stakeAmountInput, setStakeAmountInput] = useState('1000');
+  const [isStaking, setIsStaking] = useState(false);
+  const [isHarvesting, setIsHarvesting] = useState(false);
 
   // Notification & Toasts State
   const [toasts, setToasts] = useState([
@@ -167,24 +208,215 @@ export default function App() {
       })
       .catch(() => setBackendStatus('standby'));
 
-    // Fetch live products if available
+    // Fetch live products if available from Neon PostgreSQL
     dragoApi.getProducts()
       .then((res) => {
         if (res && res.data && res.data.length > 0) {
-          // Merge images and live products
-          setCatalog(prev => res.data.map((p, idx) => ({
-            ...p,
-            priceUsd: parseFloat(p.unitPrice) || 0,
+          setCatalog(res.data.map((p, idx) => ({
+            id: p.id,
+            dxucProductId: p.dxucProductId,
+            sku: p.sku,
+            title: p.title,
+            category: p.category,
             origin: p.countryOfOrigin === 'JP' ? 'Yokohama, Japan' : (p.countryOfOrigin || 'Japan'),
-            image: p.imageUrl || prev[idx % prev.length]?.image || '/drago_hero.jpg',
+            incoterms: p.incoterms,
+            moq: p.moq,
+            priceUsd: parseFloat(p.unitPrice) || 0,
+            stock: p.stockQuantity,
+            image: p.imageUrl || (idx % 2 === 0 ? '/drago_hero.jpg' : '/drago_synthetic.jpg'),
             specs: p.description || ''
           })));
         }
       })
-      .catch(() => {
-        // Fallback to local high-fidelity catalog
-      });
+      .catch(() => {});
+
+    // Fetch live orders from Neon PostgreSQL
+    dragoApi.getRecentOrders()
+      .then((res) => {
+        if (res && res.data && res.data.length > 0) {
+          setOrders(res.data.map(o => ({
+            id: o.id,
+            poNumber: o.poNumber,
+            supplier: o.sellerCompany?.tradeName || o.sellerCompany?.legalName || 'Tokyo Heavy Machinery Ltd',
+            item: o.quote?.rfq?.product?.title || 'Certified Machinery Order',
+            amountUsd: parseFloat(o.totalAmount) || 0,
+            amountJpy: Math.round((parseFloat(o.totalAmount) || 0) * (parseFloat(o.settlementRate) || 154.20)),
+            status: o.shippingStatus === 'IN_TRANSIT' ? 'In Transit to Mombasa' : (o.shippingStatus === 'DELIVERED' ? 'Customs Cleared' : 'Instant Escrow Funded'),
+            statusClass: o.shippingStatus === 'IN_TRANSIT' ? 'status-transit' : 'status-cleared',
+            date: new Date(o.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+            savingsUsd: ((parseFloat(o.totalAmount) || 0) * 0.042).toFixed(2)
+          })));
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  // Real-Time Staking Yield Accrual Simulation
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setEarnedYield(prev => ({
+        dgs: +(prev.dgs + 0.012).toFixed(3),
+        drgx: +(prev.drgx + 0.045).toFixed(3)
+      }));
+    }, 3500);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Web3 Protocol Actions
+  const handleConnectWallet = () => {
+    setWalletConnected(true);
+    confetti({
+      particleCount: 50,
+      spread: 60,
+      origin: { y: 0.6 },
+      colors: ['#D4AF37', '#10B981']
+    });
+    showToast(
+      'Web3 Wallet Connected',
+      `Connected to ${walletNetwork} (${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}).`,
+      'success'
+    );
+  };
+
+  const handleDisconnectWallet = () => {
+    setWalletConnected(false);
+    showToast('Wallet Disconnected', 'Disconnected from Ethereum Sepolia session.', 'info');
+  };
+
+  const handleMintStable = (e) => {
+    e.preventDefault();
+    const amt = parseFloat(mintStableAmount);
+    if (!amt || isNaN(amt) || amt <= 0) {
+      showToast('Invalid Mint Amount', 'Please enter a valid amount to mint.', 'error');
+      return;
+    }
+
+    setIsMintingStable(true);
+    setTimeout(() => {
+      if (mintStableType === 'DGX') {
+        setStableBalances(prev => ({ ...prev, dgx: +(prev.dgx + amt).toFixed(2) }));
+      } else {
+        const jpyEquivalent = Math.round(amt * fxRate);
+        setStableBalances(prev => ({ ...prev, dgz: +(prev.dgz + jpyEquivalent).toFixed(2) }));
+      }
+      setIsMintingStable(false);
+      confetti({
+        particleCount: 75,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#7B1113', '#10B981']
+      });
+      const tx = '0x' + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
+      showToast(
+        `${mintStableType} Stablecoin Minted`,
+        `Successfully minted ${amt.toLocaleString()} ${mintStableType} backed by ${mintStableRail}. On-chain Tx: ${tx.substring(0, 10)}...`,
+        'success'
+      );
+    }, 900);
+  };
+
+  const handleMintSynthetic = (e) => {
+    e.preventDefault();
+    const amt = parseFloat(mintSynthAmount);
+    if (!amt || isNaN(amt) || amt <= 0) {
+      showToast('Invalid Amount', 'Please enter a valid synthetic quantity.', 'error');
+      return;
+    }
+
+    const pricePerUnit = mintSynthType === 'eagle' ? 2680.50 : 74.80;
+    const requiredCollateral = +(amt * pricePerUnit * 1.5).toFixed(2);
+
+    if (requiredCollateral > stableBalances.dgx) {
+      showToast(
+        'Insufficient Collateral',
+        `Minting requires $${requiredCollateral.toLocaleString()} DGX (150% Over-collateralized). Your balance is $${stableBalances.dgx.toLocaleString()} DGX. Please mint more DGX first.`,
+        'error'
+      );
+      return;
+    }
+
+    setIsMintingSynth(true);
+    setTimeout(() => {
+      setStableBalances(prev => ({ ...prev, dgx: +(prev.dgx - requiredCollateral).toFixed(2) }));
+      if (mintSynthType === 'eagle') {
+        setSyntheticBalances(prev => ({ ...prev, eagle: +(prev.eagle + amt).toFixed(3) }));
+      } else {
+        setSyntheticBalances(prev => ({ ...prev, fly: +(prev.fly + amt).toFixed(2) }));
+      }
+      setIsMintingSynth(false);
+      confetti({
+        particleCount: 80,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#B38F2D']
+      });
+      showToast(
+        `Synthetic ${mintSynthType === 'eagle' ? 'Drago Eagle (Gold)' : 'Drago Fly (Oil)'} Minted`,
+        `+${amt} ${mintSynthType === 'eagle' ? 'oz Gold' : 'bbl Oil'} tokenized. Locked $${requiredCollateral.toLocaleString()} DGX in collateral vault.`,
+        'success'
+      );
+    }, 950);
+  };
+
+  const handleStakeTokens = (e) => {
+    e.preventDefault();
+    const amt = parseFloat(stakeAmountInput);
+    if (!amt || isNaN(amt) || amt <= 0) {
+      showToast('Invalid Stake Amount', 'Please enter a valid amount to stake.', 'error');
+      return;
+    }
+
+    setIsStaking(true);
+    setTimeout(() => {
+      if (activeStakingPool === 'DGS') {
+        setStakedBalances(prev => ({ ...prev, dgs: +(prev.dgs + amt).toFixed(2) }));
+      } else {
+        setStakedBalances(prev => ({ ...prev, drgx: +(prev.drgx + amt).toFixed(2) }));
+      }
+      setIsStaking(false);
+      confetti({
+        particleCount: 60,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ['#10B981', '#D4AF37']
+      });
+      showToast(
+        `Staked into ${activeStakingPool} Vault`,
+        `Successfully staked ${amt.toLocaleString()} tokens at ${activeStakingPool === 'DGS' ? '12.4%' : '18.6%'} APY. Yield is now compounding in real time.`,
+        'success'
+      );
+    }, 850);
+  };
+
+  const handleHarvestYield = () => {
+    const claimVal = activeStakingPool === 'DGS' ? earnedYield.dgs : earnedYield.drgx;
+    if (claimVal <= 0) {
+      showToast('No Pending Yield', 'You have no unclaimed yield at this time.', 'info');
+      return;
+    }
+
+    setIsHarvesting(true);
+    setTimeout(() => {
+      if (activeStakingPool === 'DGS') {
+        setStableBalances(prev => ({ ...prev, dgx: +(prev.dgx + claimVal).toFixed(2) }));
+        setEarnedYield(prev => ({ ...prev, dgs: 0 }));
+      } else {
+        setEarnedYield(prev => ({ ...prev, drgx: 0 }));
+      }
+      setIsHarvesting(false);
+      confetti({
+        particleCount: 70,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#10B981', '#34D399']
+      });
+      showToast(
+        'Staking Yield Harvested',
+        `Claimed +${claimVal.toLocaleString()} rewards directly to your active Web3 wallet balance.`,
+        'success'
+      );
+    }, 600);
+  };
 
   // Toast Notifications Helper
   const showToast = (title, message, type = 'success') => {
@@ -460,11 +692,53 @@ export default function App() {
         </div>
 
         <nav className="nav-links">
-          <a href="#problems" className="nav-link-item">Why DRAGO X</a>
-          <a href="#payment" className="nav-link-item active">Pay a Supplier</a>
-          <a href="#catalog" className="nav-link-item">Equipment Catalog</a>
-          <a href="#how-it-works" className="nav-link-item">How It Works</a>
+          {workspaceMode === 'trade' ? (
+            <>
+              <a href="#problems" className="nav-link-item">Why DRAGO X</a>
+              <a href="#payment" className="nav-link-item active">Pay a Supplier</a>
+              <a href="#catalog" className="nav-link-item">Equipment Catalog</a>
+              <a href="#how-it-works" className="nav-link-item">How It Works</a>
+            </>
+          ) : (
+            <>
+              <button type="button" className="nav-link-item active" onClick={() => setProtocolStep(1)}>1. Wallet</button>
+              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(2)}>2. Stablecoins</button>
+              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(3)}>3. Synthetics</button>
+              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(4)}>4. AI Oracle</button>
+              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(5)}>5. Staking</button>
+            </>
+          )}
         </nav>
+
+        {/* Workspace Mode Selector */}
+        <div className="nav-mode-selector">
+          <button 
+            type="button"
+            className={`mode-tab-btn ${workspaceMode === 'trade' ? 'active' : ''}`}
+            onClick={() => {
+              setWorkspaceMode('trade');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            title="B2B Commercial Trade & Supplier Settlement OS"
+          >
+            <Building2 size={15} />
+            <span>Trade Portal</span>
+            <span className="mode-tag-pill live">Live</span>
+          </button>
+          <button 
+            type="button"
+            className={`mode-tab-btn ${workspaceMode === 'protocol' ? 'active' : ''}`}
+            onClick={() => {
+              setWorkspaceMode('protocol');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            title="Protocol & AI Assets Web3 MVP Hub"
+          >
+            <Cpu size={15} />
+            <span>Protocol & AI Hub</span>
+            <span className="mode-tag-pill testnet">MVP</span>
+          </button>
+        </div>
 
         <div className="nav-actions">
           <div className="badge-pill badge-emerald nav-status-pill">
@@ -594,8 +868,11 @@ export default function App() {
         </div>
       </div>
 
-      {/* 3. HERO SECTION (Clear, Human & Customer-Centric) */}
-      <section className="hero-section">
+      {/* WORKSPACE MODE CONDITIONAL RENDERING */}
+      {workspaceMode === 'trade' ? (
+        <>
+          {/* 3. HERO SECTION (Clear, Human & Customer-Centric) */}
+          <section className="hero-section">
         <div className="hero-grid">
           <div className="hero-content">
             <div className="hero-badge-row">
@@ -1325,6 +1602,579 @@ export default function App() {
           </div>
         </div>
       </section>
+        </>
+      ) : (
+        <section className="protocol-hub-wrapper">
+          {/* 1. WEB3 LIVE WALLET BANNER */}
+          <div className="web3-wallet-banner">
+            <div className="wallet-banner-left">
+              <div className="wallet-avatar-icon">
+                <Shield size={26} />
+              </div>
+              <div className="wallet-info-main">
+                <div className="wallet-status-badge">
+                  <span className="wallet-status-dot" style={{ background: walletConnected ? '#10B981' : '#EF4444' }} />
+                  <span style={{ color: walletConnected ? '#34D399' : '#FCA5A5' }}>
+                    {walletConnected ? `${walletNetwork} Connected` : 'Web3 Wallet Disconnected'}
+                  </span>
+                </div>
+                {walletConnected ? (
+                  <div 
+                    className="wallet-address-copy" 
+                    onClick={() => {
+                      navigator.clipboard.writeText(walletAddress);
+                      showToast('Address Copied', 'Wallet address copied to clipboard.', 'info');
+                    }}
+                    title="Click to copy address"
+                  >
+                    <span>{walletAddress.substring(0, 8)}...{walletAddress.substring(walletAddress.length - 6)}</span>
+                    <Copy size={13} />
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
+                    Connect your MetaMask or Web3 Testnet wallet to mint assets and access AI liquidity vaults.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="wallet-balances-strip">
+              <div className="wallet-bal-pill">
+                <span className="wallet-bal-lbl">DGX (USD)</span>
+                <span className="wallet-bal-val emerald">${stableBalances.dgx.toLocaleString()}</span>
+              </div>
+              <div className="wallet-bal-pill">
+                <span className="wallet-bal-lbl">DGZ (JPY)</span>
+                <span className="wallet-bal-val">¥{stableBalances.dgz.toLocaleString()}</span>
+              </div>
+              <div className="wallet-bal-pill">
+                <span className="wallet-bal-lbl">Drago Eagle (Gold)</span>
+                <span className="wallet-bal-val gold">{syntheticBalances.eagle.toFixed(2)} oz</span>
+              </div>
+              <div className="wallet-bal-pill">
+                <span className="wallet-bal-lbl">Drago Fly (Oil)</span>
+                <span className="wallet-bal-val">{syntheticBalances.fly.toFixed(0)} bbl</span>
+              </div>
+              <div className="wallet-bal-pill">
+                <span className="wallet-bal-lbl">Gas (Sepolia)</span>
+                <span className="wallet-bal-val">{stableBalances.eth} ETH</span>
+              </div>
+
+              {walletConnected ? (
+                <button 
+                  type="button" 
+                  className="btn-wallet-action btn-disconnect-wallet"
+                  onClick={handleDisconnectWallet}
+                >
+                  <Lock size={15} />
+                  <span>Disconnect</span>
+                </button>
+              ) : (
+                <button 
+                  type="button" 
+                  className="btn-wallet-action btn-connect-wallet"
+                  onClick={handleConnectWallet}
+                >
+                  <Wallet size={16} />
+                  <span>Connect Web3 Wallet</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* 2. GUIDED 5-STEP INTERACTIVE ROADMAP CARD */}
+          <div className="guided-roadmap-card">
+            <div className="roadmap-header-row">
+              <div className="roadmap-title-box">
+                <Sparkles size={22} color="var(--color-crimson)" />
+                <div>
+                  <h3 className="roadmap-title">DRAGO X Protocol • 5-Step MVP Guided Walkthrough</h3>
+                  <span className="roadmap-subtitle">Interactive testnet front-end interface (Ethereum Sepolia Testnet)</span>
+                </div>
+              </div>
+              <div className="badge-pill badge-gold">
+                <Activity size={14} />
+                <span>Interactive Simulation Engine Active</span>
+              </div>
+            </div>
+
+            <div className="roadmap-steps-track">
+              <div 
+                className={`roadmap-step-item ${protocolStep === 1 ? 'active' : ''}`}
+                onClick={() => setProtocolStep(1)}
+              >
+                <span className="roadmap-step-num">STEP 1 {walletConnected ? '✓' : ''}</span>
+                <span className="roadmap-step-text">Connect Wallet</span>
+              </div>
+              <div 
+                className={`roadmap-step-item ${protocolStep === 2 ? 'active' : ''}`}
+                onClick={() => setProtocolStep(2)}
+              >
+                <span className="roadmap-step-num">STEP 2</span>
+                <span className="roadmap-step-text">Mint Stablecoins</span>
+              </div>
+              <div 
+                className={`roadmap-step-item ${protocolStep === 3 ? 'active' : ''}`}
+                onClick={() => setProtocolStep(3)}
+              >
+                <span className="roadmap-step-num">STEP 3</span>
+                <span className="roadmap-step-text">Mint Synthetics</span>
+              </div>
+              <div 
+                className={`roadmap-step-item ${protocolStep === 4 ? 'active' : ''}`}
+                onClick={() => setProtocolStep(4)}
+              >
+                <span className="roadmap-step-num">STEP 4</span>
+                <span className="roadmap-step-text">AI Rates & Risk</span>
+              </div>
+              <div 
+                className={`roadmap-step-item ${protocolStep === 5 ? 'active' : ''}`}
+                onClick={() => setProtocolStep(5)}
+              >
+                <span className="roadmap-step-num">STEP 5</span>
+                <span className="roadmap-step-text">Stake & Earn</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. TWO-COLUMN INTERACTIVE PROTOCOL GRID */}
+          <div className="protocol-grid-layout">
+            {/* CARD 1: MINT STABLECOINS */}
+            <div className="protocol-card" id="step-mint-stable">
+              <div>
+                <div className="card-top-heading">
+                  <div className="card-title-group">
+                    <div className="badge-pill badge-crimson" style={{ marginBottom: 8 }}>
+                      <Coins size={13} />
+                      <span>Step 2 • Native Trade Currencies</span>
+                    </div>
+                    <h3>Mint Protocol Stablecoins</h3>
+                    <p>Issue atomic trade liquidity pegged 1:1 to US Dollars or Japanese Yen with zero bank correspondent fees.</p>
+                  </div>
+                  <div className="brand-icon-box" style={{ width: 38, height: 38, minWidth: 38 }}>
+                    <Coins size={18} />
+                  </div>
+                </div>
+
+                {/* Asset Selection */}
+                <div className="asset-selector-strip">
+                  <button 
+                    type="button" 
+                    className={`asset-tab-pill ${mintStableType === 'DGX' ? 'active' : ''}`}
+                    onClick={() => setMintStableType('DGX')}
+                  >
+                    <span>DGX (USD Stablecoin)</span>
+                    <span className="mode-tag-pill live">$1.00</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`asset-tab-pill ${mintStableType === 'DGZ' ? 'active' : ''}`}
+                    onClick={() => setMintStableType('DGZ')}
+                  >
+                    <span>DGZ (JPY Stablecoin)</span>
+                    <span className="mode-tag-pill live">¥{fxRate}</span>
+                  </button>
+                </div>
+
+                <form onSubmit={handleMintStable}>
+                  <div className="form-group">
+                    <label className="form-label">Amount to Mint</label>
+                    <div className="input-box-wrapper">
+                      <input 
+                        type="number"
+                        className="styled-input styled-input-with-tag"
+                        value={mintStableAmount}
+                        onChange={e => setMintStableAmount(e.target.value)}
+                        min="10"
+                        required
+                      />
+                      <div className="input-token-tag">{mintStableType}</div>
+                    </div>
+
+                    {/* Quick Select */}
+                    <div className="quick-pills-row" style={{ marginTop: 8 }}>
+                      {['500', '1000', '5000', '10000'].map(val => (
+                        <button 
+                          key={val} 
+                          type="button" 
+                          className={`quick-pill ${mintStableAmount === val ? 'active' : ''}`}
+                          onClick={() => setMintStableAmount(val)}
+                        >
+                          +{parseInt(val).toLocaleString()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginTop: 14 }}>
+                    <label className="form-label">Collateral Funding Rail</label>
+                    <select 
+                      className="styled-input"
+                      value={mintStableRail}
+                      onChange={e => setMintStableRail(e.target.value)}
+                    >
+                      <option value="USDC Direct">USDC Direct (Circle On-Chain Reserves)</option>
+                      <option value="USDT Liquid">Tether USDT Liquidity Pool</option>
+                      <option value="Bank Wire Escrow">Commercial Bank Wire Escrow (USD)</option>
+                    </select>
+                  </div>
+
+                  {/* Specs Panel */}
+                  <div className="card-specs-panel">
+                    <div className="spec-line-item">
+                      <span className="label">Pegged Parity:</span>
+                      <span className="value emerald">{mintStableType === 'DGX' ? '1 DGX = $1.0000 USD' : '1 DGZ = ¥1.00 JPY'}</span>
+                    </div>
+                    <div className="spec-line-item">
+                      <span className="label">Sepolia Gas Estimate:</span>
+                      <span className="value">~0.0018 ETH (Free Testnet)</span>
+                    </div>
+                    <div className="spec-line-item">
+                      <span className="label">Smart Contract:</span>
+                      <span className="value gold" style={{ fontFamily: 'monospace' }}>0x8910...b2c1 (Verified)</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    className="btn-colorful" 
+                    style={{ width: '100%', justifyContent: 'center' }}
+                    disabled={isMintingStable}
+                  >
+                    {isMintingStable ? (
+                      <>
+                        <RefreshCw size={17} className="animate-spin" />
+                        <span>Executing On-Chain Mint...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Coins size={17} />
+                        <span>Mint {mintStableAmount} {mintStableType}</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* CARD 2: MINT SYNTHETIC ASSETS */}
+            <div className="protocol-card" id="step-mint-synthetic">
+              <div>
+                <div className="card-top-heading">
+                  <div className="card-title-group">
+                    <div className="badge-pill badge-gold" style={{ marginBottom: 8 }}>
+                      <Sparkles size={13} />
+                      <span>Step 3 • Real-World Asset Tokenization</span>
+                    </div>
+                    <h3>Mint Synthetic RWAs</h3>
+                    <p>Hedge cross-border trade and currency volatility by minting synthetic physical gold and crude oil on-chain.</p>
+                  </div>
+                  <div className="brand-icon-box" style={{ width: 38, height: 38, minWidth: 38 }}>
+                    <Flame size={18} />
+                  </div>
+                </div>
+
+                {/* Synthetic Asset Selection */}
+                <div className="asset-selector-strip">
+                  <button 
+                    type="button" 
+                    className={`asset-tab-pill ${mintSynthType === 'eagle' ? 'active' : ''}`}
+                    onClick={() => setMintSynthType('eagle')}
+                  >
+                    <span>Drago Eagle (Gold)</span>
+                    <span className="mode-tag-pill testnet">$2,680/oz</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`asset-tab-pill ${mintSynthType === 'fly' ? 'active' : ''}`}
+                    onClick={() => setMintSynthType('fly')}
+                  >
+                    <span>Drago Fly (Crude Oil)</span>
+                    <span className="mode-tag-pill testnet">$74.80/bbl</span>
+                  </button>
+                </div>
+
+                <form onSubmit={handleMintSynthetic}>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Quantity ({mintSynthType === 'eagle' ? 'Troy Ounces' : 'Barrels'})
+                    </label>
+                    <div className="input-box-wrapper">
+                      <input 
+                        type="number"
+                        className="styled-input styled-input-with-tag"
+                        value={mintSynthAmount}
+                        onChange={e => setMintSynthAmount(e.target.value)}
+                        step="0.1"
+                        min="0.1"
+                        required
+                      />
+                      <div className="input-token-tag">{mintSynthType === 'eagle' ? 'OZ' : 'BBL'}</div>
+                    </div>
+                  </div>
+
+                  {/* Over-Collateralization Gauge */}
+                  <div className="collateral-ratio-box">
+                    <div className="ratio-labels-row">
+                      <span style={{ color: 'var(--text-muted)' }}>Collateralization Ratio</span>
+                      <span style={{ color: '#059669' }}>150.0% (Optimal Safety)</span>
+                    </div>
+                    <div className="ratio-meter-track">
+                      <div className="ratio-meter-fill" style={{ width: '85%' }} />
+                    </div>
+                  </div>
+
+                  {/* Specs Panel */}
+                  <div className="card-specs-panel">
+                    <div className="spec-line-item">
+                      <span className="label">Oracle Benchmark:</span>
+                      <span className="value">
+                        {mintSynthType === 'eagle' ? 'LBMA Gold Spot ($2,680.50/oz)' : 'Brent Crude Index ($74.80/bbl)'}
+                      </span>
+                    </div>
+                    <div className="spec-line-item">
+                      <span className="label">Required DGX Collateral:</span>
+                      <span className="value gold">
+                        ${((parseFloat(mintSynthAmount) || 0) * (mintSynthType === 'eagle' ? 2680.50 : 74.80) * 1.5).toLocaleString(undefined, { minimumFractionDigits: 2 })} DGX
+                      </span>
+                    </div>
+                    <div className="spec-line-item">
+                      <span className="label">Liquidation Buffer:</span>
+                      <span className="value emerald">120.0% Minimum Floor</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    className="btn-colorful" 
+                    style={{ width: '100%', justifyContent: 'center' }}
+                    disabled={isMintingSynth}
+                  >
+                    {isMintingSynth ? (
+                      <>
+                        <RefreshCw size={17} className="animate-spin" />
+                        <span>Locking Collateral & Tokenizing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Flame size={17} />
+                        <span>Mint {mintSynthAmount} {mintSynthType === 'eagle' ? 'Drago Eagle (Gold)' : 'Drago Fly (Oil)'}</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* CARD 3: AI ORACLE & RISK SCORING DASHBOARD */}
+            <div className="protocol-card" id="step-ai-dashboard">
+              <div>
+                <div className="card-top-heading">
+                  <div className="card-title-group">
+                    <div className="badge-pill badge-crimson" style={{ marginBottom: 8 }}>
+                      <Cpu size={13} />
+                      <span>Step 4 • Alberta GPU Compute Cluster</span>
+                    </div>
+                    <h3>AI Oracle & Corridor Risk Engine</h3>
+                    <p>Dynamic interest rates, port congestion scoring, and automated liquidity routing for the Africa-Japan corridor.</p>
+                  </div>
+                  <div className="brand-icon-box" style={{ width: 38, height: 38, minWidth: 38 }}>
+                    <TrendingUp size={18} />
+                  </div>
+                </div>
+
+                {/* AI Rates Comparison */}
+                <div className="ai-rates-comparison-box">
+                  <div className="rate-col">
+                    <span className="rate-val-highlight">4.8% APR</span>
+                    <span className="rate-col-sub" style={{ color: 'var(--color-crimson)' }}>DRAGO X AI Dynamic Rate</span>
+                  </div>
+                  <div className="rate-col">
+                    <span className="rate-val-highlight bank">14.5% APR</span>
+                    <span className="rate-col-sub">Traditional Bank Letter of Credit</span>
+                  </div>
+                </div>
+
+                {/* Real-Time Corridor Risk Scores */}
+                <div className="ai-corridor-grid">
+                  <div className="ai-corridor-card">
+                    <div>
+                      <div className="corridor-route-name">Nairobi & Mombasa Port Berth 4</div>
+                      <div className="corridor-route-meta">Customs Inspection: Fast-Track • Est. Transit: 14 to 18 Days</div>
+                    </div>
+                    <div className="corridor-score-badge">
+                      <span className="score-num">92/100</span>
+                      <span className="score-lbl">Low Risk</span>
+                    </div>
+                  </div>
+
+                  <div className="ai-corridor-card">
+                    <div>
+                      <div className="corridor-route-name">Lagos Apapa Container Corridor</div>
+                      <div className="corridor-route-meta">Demurrage Mitigation Active • Est. Transit: 21 to 24 Days</div>
+                    </div>
+                    <div className="corridor-score-badge">
+                      <span className="score-num" style={{ color: '#D97706' }}>84/100</span>
+                      <span className="score-lbl">Moderate</span>
+                    </div>
+                  </div>
+
+                  <div className="ai-corridor-card">
+                    <div>
+                      <div className="corridor-route-name">Yokohama & Nagoya Exporter Desk</div>
+                      <div className="corridor-route-meta">SMBC Clearing Code: Active • JAAI Certificates Verified</div>
+                    </div>
+                    <div className="corridor-score-badge">
+                      <span className="score-num">99/100</span>
+                      <span className="score-lbl">Prime Tier</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card-specs-panel" style={{ marginTop: 14 }}>
+                  <div className="spec-line-item">
+                    <span className="label">Automated Liquidity Router:</span>
+                    <span className="value emerald">Tokyo Pool (¥450M) ⇄ African Escrow ($3.2M)</span>
+                  </div>
+                  <div className="spec-line-item">
+                    <span className="label">Oracle Refresh Interval:</span>
+                    <span className="value">Every 12 seconds via Alberta GPU Node</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CARD 4: STAKING & YIELD VAULTS */}
+            <div className="protocol-card" id="step-staking-vaults">
+              <div>
+                <div className="card-top-heading">
+                  <div className="card-title-group">
+                    <div className="badge-pill badge-gold" style={{ marginBottom: 8 }}>
+                      <TrendingUp size={13} />
+                      <span>Step 5 • Trade Liquidity Vaults</span>
+                    </div>
+                    <h3>Stake & Earn Protocol Yield</h3>
+                    <p>Provide liquidity to cross-border settlement pools and earn native yield from international trade clearance fees.</p>
+                  </div>
+                  <div className="brand-icon-box" style={{ width: 38, height: 38, minWidth: 38 }}>
+                    <BarChart3 size={18} />
+                  </div>
+                </div>
+
+                {/* Vault Tabs */}
+                <div className="staking-vault-tabs">
+                  <button 
+                    type="button" 
+                    className={`vault-tab-btn ${activeStakingPool === 'DGS' ? 'active' : ''}`}
+                    onClick={() => setActiveStakingPool('DGS')}
+                  >
+                    <span>DGS Liquidity Vault (12.4% APY)</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`vault-tab-btn ${activeStakingPool === 'DRGX' ? 'active' : ''}`}
+                    onClick={() => setActiveStakingPool('DRGX')}
+                  >
+                    <span>DRGX Governance (18.6% APY)</span>
+                  </button>
+                </div>
+
+                {/* Real-Time Accrued Yield Box */}
+                <div className="vault-yield-box">
+                  <div>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: 2 }}>
+                      Live Pending Rewards ({activeStakingPool})
+                    </span>
+                    <div className="yield-num-ticking">
+                      +{activeStakingPool === 'DGS' ? earnedYield.dgs.toFixed(3) : earnedYield.drgx.toFixed(3)} {activeStakingPool}
+                    </div>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="btn-minimal"
+                    onClick={handleHarvestYield}
+                    disabled={isHarvesting}
+                    style={{ padding: '8px 14px', fontSize: '0.82rem' }}
+                  >
+                    {isHarvesting ? 'Harvesting...' : 'Harvest Rewards'}
+                  </button>
+                </div>
+
+                <form onSubmit={handleStakeTokens}>
+                  <div className="form-group">
+                    <label className="form-label">Stake Amount ({activeStakingPool})</label>
+                    <div className="input-box-wrapper">
+                      <input 
+                        type="number"
+                        className="styled-input styled-input-with-tag"
+                        value={stakeAmountInput}
+                        onChange={e => setStakeAmountInput(e.target.value)}
+                        min="50"
+                        required
+                      />
+                      <div className="input-token-tag">{activeStakingPool}</div>
+                    </div>
+                  </div>
+
+                  <div className="card-specs-panel">
+                    <div className="spec-line-item">
+                      <span className="label">Staked in Vault:</span>
+                      <span className="value emerald">
+                        {activeStakingPool === 'DGS' ? `${stakedBalances.dgs.toLocaleString()} DGS` : `${stakedBalances.drgx.toLocaleString()} DRGX`}
+                      </span>
+                    </div>
+                    <div className="spec-line-item">
+                      <span className="label">Lockup Period:</span>
+                      <span className="value">0 Days (Flexible Instant Unstake)</span>
+                    </div>
+                    <div className="spec-line-item">
+                      <span className="label">Yield Source:</span>
+                      <span className="value gold">0.3% Protocol Trade Clearance Fee</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    className="btn-colorful" 
+                    style={{ width: '100%', justifyContent: 'center' }}
+                    disabled={isStaking}
+                  >
+                    {isStaking ? (
+                      <>
+                        <RefreshCw size={17} className="animate-spin" />
+                        <span>Staking into Vault...</span>
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp size={17} />
+                        <span>Stake {stakeAmountInput} {activeStakingPool}</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          {/* 4. OMNICHAIN & SMART CONTRACT ARCHITECTURE BANNER */}
+          <div className="hero-stats-strip" style={{ marginTop: 20 }}>
+            <div className="hero-stat-unit">
+              <span className="hero-stat-number text-gradient-crimson">10</span>
+              <span className="hero-stat-desc">Audited Smart Contracts</span>
+            </div>
+            <div className="stat-divider" />
+            <div className="hero-stat-unit">
+              <span className="hero-stat-number text-gradient">8+</span>
+              <span className="hero-stat-desc">Supported EVM Chains</span>
+            </div>
+            <div className="stat-divider" />
+            <div className="hero-stat-unit">
+              <span className="hero-stat-number text-gradient-gold">Zero</span>
+              <span className="hero-stat-desc">Counterparty Default Risk</span>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* RFQ MODAL */}
       {rfqModalOpen && (

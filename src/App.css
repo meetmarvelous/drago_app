@@ -2634,3 +2634,619 @@
   }
 }
 
+/* ==========================================================================
+   WORKSPACE MODE SELECTOR & PROTOCOL & AI ASSETS HUB STYLES
+   ========================================================================== */
+
+/* Mode Switcher in Navbar */
+.nav-mode-selector {
+  display: flex;
+  align-items: center;
+  background: rgba(123, 17, 19, 0.06);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  gap: 4px;
+}
+
+.mode-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.mode-tab-btn:hover {
+  color: var(--color-crimson);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.mode-tab-btn.active {
+  background: #FFFFFF;
+  color: var(--color-crimson);
+  box-shadow: 0 2px 8px rgba(123, 17, 19, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.mode-tag-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.mode-tag-pill.live {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+.mode-tag-pill.testnet {
+  background: rgba(212, 175, 55, 0.2);
+  color: #9A7B1C;
+}
+
+/* PROTOCOL & AI ASSETS HUB MAIN CONTAINER */
+.protocol-hub-wrapper {
+  padding: 40px 24px 80px;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Guided 5-Step Interactive Roadmap Bar */
+.guided-roadmap-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 30px rgba(123, 17, 19, 0.04);
+}
+
+.roadmap-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.roadmap-title-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.roadmap-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.roadmap-subtitle {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.roadmap-steps-track {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.roadmap-step-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(123, 17, 19, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  text-align: left;
+}
+
+.roadmap-step-item:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  background: rgba(212, 175, 55, 0.04);
+}
+
+.roadmap-step-item.active {
+  background: linear-gradient(135deg, rgba(123, 17, 19, 0.05) 0%, rgba(212, 175, 55, 0.1) 100%);
+  border-color: var(--color-gold);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.15);
+}
+
+.roadmap-step-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-gold-deep);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.roadmap-step-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Web3 Live Wallet Bar */
+.web3-wallet-banner {
+  background: linear-gradient(135deg, #1C0508 0%, #3D090E 50%, #1C0508 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  padding: 24px 28px;
+  color: #FFFDF0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  box-shadow: 0 12px 40px rgba(74, 14, 23, 0.25);
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.wallet-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.wallet-avatar-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--grad-crimson);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gold);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.wallet-info-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wallet-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #34D399;
+}
+
+.wallet-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+}
+
+.wallet-address-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wallet-address-copy:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--color-gold);
+}
+
+.wallet-balances-strip {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.wallet-bal-pill {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 8px 14px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wallet-bal-lbl {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.wallet-bal-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFDF0;
+}
+
+.wallet-bal-val.gold {
+  color: #FBBF24;
+}
+
+.wallet-bal-val.emerald {
+  color: #34D399;
+}
+
+.btn-wallet-action {
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+}
+
+.btn-connect-wallet {
+  background: linear-gradient(135deg, #D4AF37 0%, #B38F2D 100%);
+  color: #1C0508;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
+}
+
+.btn-connect-wallet:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(212, 175, 55, 0.5);
+}
+
+.btn-disconnect-wallet {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFDF0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-disconnect-wallet:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #EF4444;
+  color: #FCA5A5;
+}
+
+/* Two-Column Interactive Protocol Grid */
+.protocol-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 40px;
+}
+
+.protocol-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(123, 17, 19, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.protocol-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(123, 17, 19, 0.08);
+}
+
+.card-top-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.card-title-group h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 6px 0;
+}
+
+.card-title-group p {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Asset Toggle Tabs inside Card */
+.asset-selector-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(123, 17, 19, 0.04);
+  padding: 5px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  margin-bottom: 22px;
+  gap: 6px;
+}
+
+.asset-tab-pill {
+  padding: 10px 14px;
+  border-radius: 9px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.asset-tab-pill.active {
+  background: #FFFFFF;
+  color: var(--color-crimson);
+  box-shadow: 0 2px 8px rgba(123, 17, 19, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+/* Gas & Collateral Specs Box */
+.card-specs-panel {
+  background: rgba(123, 17, 19, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spec-line-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.spec-line-item .label {
+  color: var(--text-muted);
+}
+
+.spec-line-item .value {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.spec-line-item .value.gold {
+  color: var(--color-gold-deep);
+}
+
+.spec-line-item .value.emerald {
+  color: #059669;
+}
+
+/* Over-Collateralization Meter */
+.collateral-ratio-box {
+  margin: 16px 0;
+}
+
+.ratio-labels-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ratio-meter-track {
+  height: 8px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ratio-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #10B981 0%, #D4AF37 100%);
+  transition: width 0.4s ease;
+}
+
+/* AI Oracle Corridor Intelligence Cards */
+.ai-corridor-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.ai-corridor-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(123, 17, 19, 0.02);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 14px;
+  transition: all 0.2s ease;
+}
+
+.ai-corridor-card:hover {
+  background: rgba(212, 175, 55, 0.06);
+  border-color: var(--color-gold);
+}
+
+.corridor-route-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+
+.corridor-route-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.corridor-score-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.score-num {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #059669;
+}
+
+.score-lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* AI Dynamic Interest Rate Gauge */
+.ai-rates-comparison-box {
+  background: linear-gradient(135deg, rgba(123, 17, 19, 0.04) 0%, rgba(212, 175, 55, 0.08) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 16px;
+  padding: 18px;
+  margin: 18px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  text-align: center;
+}
+
+.rate-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.rate-val-highlight {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-crimson);
+}
+
+.rate-val-highlight.bank {
+  color: #9CA3AF;
+  text-decoration: line-through;
+}
+
+.rate-col-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Staking Pools Section */
+.staking-vault-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.vault-tab-btn {
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vault-tab-btn.active {
+  background: #FFFFFF;
+  color: var(--color-crimson);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.vault-yield-box {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.yield-num-ticking {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #059669;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+  .protocol-grid-layout {
+    grid-template-columns: 1fr;
+  }
+  .roadmap-steps-track {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .web3-wallet-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .wallet-balances-strip {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 600px) {
+  .roadmap-steps-track {
+    grid-template-columns: 1fr;
+  }
+  .nav-mode-selector {
+    display: none;
+  }
+}
+

@@ -1,0 +1,12 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "status": "ready_for_deployment",
+  "rpcUrl": "https://eth-sepolia.g.alchemy.com/v2/alch_yX4sywCIZulctfyTjTEpu",
+  "explorerBase": "https://sepolia.etherscan.io/address/",
+  "contracts": {
+    "DGXToken": "0xPendingSepoliaDeployment",
+    "DGZToken": "0xPendingSepoliaDeployment",
+    "DragoEscrow": "0xPendingSepoliaDeployment"
+  }
+}

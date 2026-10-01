@@ -72,12 +72,13 @@ export default function App() {
   // PROTOCOL & AI ASSETS HUB STATE (Web3 MVP)
   // ==========================================
   const [walletConnected, setWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('0x71a9f39c824e2b0284f1837e891b01a2c384e590');
+  const [walletAddress, setWalletAddress] = useState('');
   const [walletNetwork, setWalletNetwork] = useState('Ethereum Sepolia Testnet');
+  const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   const [protocolStep, setProtocolStep] = useState(1);
   
   // Balances in Web3 Wallet
-  const [stableBalances, setStableBalances] = useState({ dgx: 5000.00, dgz: 771000.00, eth: 2.45 });
+  const [stableBalances, setStableBalances] = useState({ dgx: 5000.00, dgz: 771000.00, eth: 0.00 });
   const [syntheticBalances, setSyntheticBalances] = useState({ eagle: 1.25, fly: 45.00 });
   const [stakedBalances, setStakedBalances] = useState({ dgs: 2500.00, drgx: 12000.00 });
   const [earnedYield, setEarnedYield] = useState({ dgs: 38.45, drgx: 142.80 });
@@ -262,20 +263,150 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Web3 Protocol Actions
-  const handleConnectWallet = () => {
-    setWalletConnected(true);
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.6 },
-      colors: ['#D4AF37', '#10B981']
-    });
-    showToast(
-      'Web3 Wallet Connected',
-      `Connected to ${walletNetwork} (${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}).`,
-      'success'
-    );
+  // Check for existing wallet connection and listen for account/chain changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      window.ethereum.request({ method: 'eth_accounts' })
+        .then(async (accounts) => {
+          if (accounts && accounts.length > 0) {
+            const account = accounts[0];
+            setWalletAddress(account);
+            setWalletConnected(true);
+
+            try {
+              const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+              if (chainId === '0xaa36a7') {
+                setWalletNetwork('Ethereum Sepolia Testnet');
+              } else {
+                setWalletNetwork('Non-Sepolia Network');
+              }
+
+              const balHex = await window.ethereum.request({
+                method: 'eth_getBalance',
+                params: [account, 'latest'],
+              });
+              const ethBal = parseInt(balHex, 16) / 1e18;
+              setStableBalances(prev => ({ ...prev, eth: +ethBal.toFixed(4) }));
+            } catch (e) {
+              console.warn('Wallet check warning:', e);
+            }
+          }
+        })
+        .catch(() => {});
+
+      const handleAccountsChanged = (accounts) => {
+        if (!accounts || accounts.length === 0) {
+          setWalletConnected(false);
+          setWalletAddress('');
+          showToast('Wallet Disconnected', 'MetaMask session disconnected.', 'info');
+        } else {
+          setWalletAddress(accounts[0]);
+          setWalletConnected(true);
+          showToast('Account Changed', `Switched to ${accounts[0].substring(0, 6)}...${accounts[0].substring(accounts[0].length - 4)}`, 'info');
+        }
+      };
+
+      const handleChainChanged = (chainId) => {
+        if (chainId === '0xaa36a7') {
+          setWalletNetwork('Ethereum Sepolia Testnet');
+          showToast('Network Switched', 'Connected to Ethereum Sepolia Testnet.', 'success');
+        } else {
+          setWalletNetwork('Non-Sepolia Network');
+          showToast('Wrong Network', 'Please switch your wallet to Sepolia Testnet.', 'warning');
+        }
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
+
+      return () => {
+        if (window.ethereum && window.ethereum.removeListener) {
+          window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+          window.ethereum.removeListener('chainChanged', handleChainChanged);
+        }
+      };
+    }
+  }, []);
+
+  // Web3 Protocol Actions - Real MetaMask & Sepolia RPC
+  const handleConnectWallet = async () => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      try {
+        setIsConnectingWallet(true);
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts && accounts.length > 0) {
+          const account = accounts[0];
+          setWalletAddress(account);
+          setWalletConnected(true);
+
+          // Verify Network: Sepolia is 0xaa36a7 (11155111)
+          const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+          if (currentChainId !== '0xaa36a7') {
+            try {
+              await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0xaa36a7' }],
+              });
+              setWalletNetwork('Ethereum Sepolia Testnet');
+            } catch (switchError) {
+              if (switchError.code === 4902) {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{
+                    chainId: '0xaa36a7',
+                    chainName: 'Ethereum Sepolia Testnet',
+                    nativeCurrency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 },
+                    rpcUrls: ['https://eth-sepolia.g.alchemy.com/v2/alch_yX4sywCIZulctfyTjTEpu', 'https://rpc.sepolia.org'],
+                    blockExplorerUrls: ['https://sepolia.etherscan.io'],
+                  }],
+                });
+                setWalletNetwork('Ethereum Sepolia Testnet');
+              }
+            }
+          } else {
+            setWalletNetwork('Ethereum Sepolia Testnet');
+          }
+
+          // Query Real Sepolia ETH Balance
+          try {
+            const balHex = await window.ethereum.request({
+              method: 'eth_getBalance',
+              params: [account, 'latest'],
+            });
+            const ethBal = parseInt(balHex, 16) / 1e18;
+            setStableBalances(prev => ({ ...prev, eth: +ethBal.toFixed(4) }));
+          } catch (e) {
+            console.warn('Could not fetch ETH balance:', e);
+          }
+
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#D4AF37', '#10B981']
+          });
+
+          showToast(
+            'MetaMask Connected',
+            `Connected to Sepolia (${account.substring(0, 6)}...${account.substring(account.length - 4)}). Real on-chain actions ready.`,
+            'success'
+          );
+        }
+      } catch (err) {
+        showToast('Connection Rejected', err.message || 'MetaMask connection was cancelled.', 'error');
+      } finally {
+        setIsConnectingWallet(false);
+      }
+    } else {
+      // Fallback for browsers without MetaMask extension
+      showToast(
+        'MetaMask Not Detected',
+        'Please install the MetaMask browser extension to perform real transactions on Ethereum Sepolia Testnet. Demo mode enabled.',
+        'info'
+      );
+      setWalletAddress('0x71a9f39c824e2b0284f1837e891b01a2c384e590');
+      setWalletConnected(true);
+    }
   };
 
   const handleDisconnectWallet = () => {
@@ -679,192 +810,367 @@ export default function App() {
         </div>
       </div>
 
-      {/* 2. STICKY CLEAN NAVBAR */}
+      {/* 2. STICKY CLEAN RESPONSIVE NAVBAR */}
       <header className="navbar">
-        <div className="nav-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="brand-icon-box">
-            <img src="/drago_logo.png" alt="DRAGO X Logo" className="brand-icon-img" />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span className="brand-title">DRAGO X</span>
-            <span className="brand-tag">AFRICA-JAPAN TRADE</span>
-          </div>
-        </div>
-
-        <nav className="nav-links">
-          {workspaceMode === 'trade' ? (
-            <>
-              <a href="#problems" className="nav-link-item">Why DRAGO X</a>
-              <a href="#payment" className="nav-link-item active">Pay a Supplier</a>
-              <a href="#catalog" className="nav-link-item">Equipment Catalog</a>
-              <a href="#how-it-works" className="nav-link-item">How It Works</a>
-            </>
-          ) : (
-            <>
-              <button type="button" className="nav-link-item active" onClick={() => setProtocolStep(1)}>1. Wallet</button>
-              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(2)}>2. Stablecoins</button>
-              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(3)}>3. Synthetics</button>
-              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(4)}>4. AI Oracle</button>
-              <button type="button" className="nav-link-item" onClick={() => setProtocolStep(5)}>5. Staking</button>
-            </>
-          )}
-        </nav>
-
-        {/* Workspace Mode Selector */}
-        <div className="nav-mode-selector">
-          <button 
-            type="button"
-            className={`mode-tab-btn ${workspaceMode === 'trade' ? 'active' : ''}`}
-            onClick={() => {
-              setWorkspaceMode('trade');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            title="B2B Commercial Trade & Supplier Settlement OS"
-          >
-            <Building2 size={15} />
-            <span>Trade Portal</span>
-            <span className="mode-tag-pill live">Live</span>
-          </button>
-          <button 
-            type="button"
-            className={`mode-tab-btn ${workspaceMode === 'protocol' ? 'active' : ''}`}
-            onClick={() => {
-              setWorkspaceMode('protocol');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            title="Protocol & AI Assets Web3 MVP Hub"
-          >
-            <Cpu size={15} />
-            <span>Protocol & AI Hub</span>
-            <span className="mode-tag-pill testnet">MVP</span>
-          </button>
-        </div>
-
-        <div className="nav-actions">
-          <div className="badge-pill badge-emerald nav-status-pill">
-            <span className="live-pulse" />
-            <span>Direct Corridor Active</span>
+        <div className="navbar-container">
+          {/* Brand */}
+          <div className="nav-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div className="brand-icon-box">
+              <img src="/drago_logo.png" alt="DRAGO X Logo" className="brand-icon-img" />
+            </div>
+            <div className="brand-text-box">
+              <span className="brand-title">DRAGO X</span>
+              <span className="brand-tag">AFRICA-JAPAN TRADE</span>
+            </div>
           </div>
 
-          {/* Live Corridor Notifications Bell */}
-          <div className="nav-notification-wrapper">
+          {/* Desktop & Tablet Workspace Mode Switcher */}
+          <div className="nav-mode-selector">
             <button 
-              className={`nav-bell-btn ${notificationMenuOpen ? 'active' : ''}`}
-              onClick={() => setNotificationMenuOpen(!notificationMenuOpen)}
-              title="Corridor live trade updates"
-              aria-label="View notifications"
+              type="button"
+              className={`mode-tab-btn ${workspaceMode === 'trade' ? 'active' : ''}`}
+              onClick={() => {
+                setWorkspaceMode('trade');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              title="B2B Commercial Trade & Supplier Settlement OS"
             >
-              <Bell size={17} />
-              <span className="bell-badge-dot" />
+              <Building2 size={15} />
+              <span>Trade Portal</span>
+              <span className="mode-tag-pill live">Live</span>
             </button>
-
-            {notificationMenuOpen && (
-              <div className="notification-dropdown">
-                <div className="notif-header">
-                  <span>Corridor Live Events</span>
-                  <span className="notif-count">3 Live</span>
-                </div>
-                <div className="notif-list">
-                  <div className="notif-item">
-                    <span className="notif-dot green" />
-                    <div>
-                      <div className="notif-title">Yokohama Port Export Clearance</div>
-                      <div className="notif-time">2 mins ago • JAAI Certificate verified</div>
-                    </div>
-                  </div>
-                  <div className="notif-item">
-                    <span className="notif-dot gold" />
-                    <div>
-                      <div className="notif-title">Tokyo Interbank FX Window Open</div>
-                      <div className="notif-time">12 mins ago • Guaranteed rate: 1 USD = {fxRate} JPY</div>
-                    </div>
-                  </div>
-                  <div className="notif-item">
-                    <span className="notif-dot crimson" />
-                    <div>
-                      <div className="notif-title">Digital Escrow Protection Active</div>
-                      <div className="notif-time">1 hr ago • Zero counterparty loss guaranteed</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            <button 
+              type="button"
+              className={`mode-tab-btn ${workspaceMode === 'protocol' ? 'active' : ''}`}
+              onClick={() => {
+                setWorkspaceMode('protocol');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              title="Protocol & AI Assets Web3 MVP Hub"
+            >
+              <Cpu size={15} />
+              <span>Protocol & AI</span>
+              <span className="mode-tag-pill testnet">MVP</span>
+            </button>
           </div>
 
-          <button 
-            type="button" 
-            className="btn-minimal nav-topup-btn"
-            onClick={() => setTopUpModalOpen(true)}
-            title="Add funds to commercial escrow balance"
-          >
-            <Wallet size={15} color="var(--color-gold-deep)" />
-            <span>Top Up (${(availableBalance || 0).toLocaleString()})</span>
-          </button>
+          {/* Desktop Nav Links */}
+          <nav className="nav-links">
+            {workspaceMode === 'trade' ? (
+              <>
+                <a href="#problems" className="nav-link-item">Why DRAGO X</a>
+                <a href="#payment" className="nav-link-item active">Pay Supplier</a>
+                <a href="#catalog" className="nav-link-item">Catalog</a>
+                <a href="#how-it-works" className="nav-link-item">How It Works</a>
+              </>
+            ) : (
+              <>
+                <button type="button" className={`nav-link-item ${protocolStep === 1 ? 'active' : ''}`} onClick={() => setProtocolStep(1)}>1. Wallet</button>
+                <button type="button" className={`nav-link-item ${protocolStep === 2 ? 'active' : ''}`} onClick={() => setProtocolStep(2)}>2. Stablecoins</button>
+                <button type="button" className={`nav-link-item ${protocolStep === 3 ? 'active' : ''}`} onClick={() => setProtocolStep(3)}>3. Synthetics</button>
+                <button type="button" className={`nav-link-item ${protocolStep === 4 ? 'active' : ''}`} onClick={() => setProtocolStep(4)}>4. AI Oracle</button>
+                <button type="button" className={`nav-link-item ${protocolStep === 5 ? 'active' : ''}`} onClick={() => setProtocolStep(5)}>5. Staking</button>
+              </>
+            )}
+          </nav>
 
-          <a 
-            href="#payment" 
-            className="btn-colorful nav-wallet-btn"
-          >
-            <span>Pay Supplier</span>
-            <ChevronRight size={16} />
-          </a>
+          {/* Right Action Controls */}
+          <div className="nav-actions">
+            {/* Live Corridor Status Indicator (Desktop only) */}
+            <div className="badge-pill badge-emerald nav-status-pill">
+              <span className="live-pulse" />
+              <span>Corridor Live</span>
+            </div>
 
-          <button 
-            className="hamburger-btn" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            {/* Notification Bell */}
+            <div className="nav-notification-wrapper">
+              <button 
+                type="button"
+                className={`nav-bell-btn ${notificationMenuOpen ? 'active' : ''}`}
+                onClick={() => setNotificationMenuOpen(!notificationMenuOpen)}
+                title="Corridor live trade updates"
+                aria-label="View notifications"
+              >
+                <Bell size={17} />
+                <span className="bell-badge-dot" />
+              </button>
+
+              {notificationMenuOpen && (
+                <div className="notification-dropdown">
+                  <div className="notif-header">
+                    <span>Corridor Live Events</span>
+                    <span className="notif-count">3 Live</span>
+                  </div>
+                  <div className="notif-list">
+                    <div className="notif-item">
+                      <span className="notif-dot green" />
+                      <div>
+                        <div className="notif-title">Yokohama Port Export Clearance</div>
+                        <div className="notif-time">2 mins ago • JAAI Certificate verified</div>
+                      </div>
+                    </div>
+                    <div className="notif-item">
+                      <span className="notif-dot gold" />
+                      <div>
+                        <div className="notif-title">Tokyo Interbank FX Window Open</div>
+                        <div className="notif-time">12 mins ago • Guaranteed rate: 1 USD = {fxRate} JPY</div>
+                      </div>
+                    </div>
+                    <div className="notif-item">
+                      <span className="notif-dot crimson" />
+                      <div>
+                        <div className="notif-title">Digital Escrow Protection Active</div>
+                        <div className="notif-time">1 hr ago • Zero counterparty loss guaranteed</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Primary Action Button Contextual to Mode */}
+            {workspaceMode === 'trade' ? (
+              <>
+                <button 
+                  type="button" 
+                  className="btn-minimal nav-topup-btn"
+                  onClick={() => setTopUpModalOpen(true)}
+                  title="Add funds to commercial escrow balance"
+                >
+                  <Wallet size={15} color="var(--color-gold-deep)" />
+                  <span>Top Up (${(availableBalance || 0).toLocaleString()})</span>
+                </button>
+
+                <a 
+                  href="#payment" 
+                  className="btn-colorful nav-action-btn"
+                >
+                  <span>Pay Supplier</span>
+                  <ChevronRight size={15} />
+                </a>
+              </>
+            ) : (
+              walletConnected ? (
+                <div className="nav-wallet-connected-pill" onClick={handleDisconnectWallet} title="Click to disconnect">
+                  <span className="wallet-dot online" />
+                  <span className="wallet-address-short">{walletAddress ? `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 'Connected'}</span>
+                  <span className="wallet-eth-bal">{stableBalances.eth || 0} ETH</span>
+                </div>
+              ) : (
+                <button 
+                  type="button"
+                  className="btn-colorful nav-action-btn"
+                  onClick={handleConnectWallet}
+                  disabled={isConnectingWallet}
+                >
+                  <Wallet size={15} />
+                  <span>{isConnectingWallet ? 'Connecting...' : 'Connect Sepolia'}</span>
+                </button>
+              )
+            )}
+
+            {/* Hamburger Button for Mobile / Tablet */}
+            <button 
+              type="button"
+              className="hamburger-btn" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Backdrop overlay for Mobile Drawer */}
+      <div 
+        className={`mobile-nav-backdrop ${mobileMenuOpen ? 'open' : ''}`}
+        onClick={() => setMobileMenuOpen(false)}
+      />
+
+      {/* Mobile & Tablet Navigation Drawer */}
       <div className={`mobile-nav-drawer ${mobileMenuOpen ? 'open' : ''}`}>
-        <div className="mobile-nav-links">
-          <a 
-            href="#problems" 
-            className="mobile-nav-link-item"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <AlertTriangle size={18} color="var(--color-crimson)" />
-            <span>Why DRAGO X (Problems We Fix)</span>
-          </a>
-          <a 
-            href="#payment" 
-            className="mobile-nav-link-item"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <Zap size={18} color="var(--color-gold)" />
-            <span>Pay Supplier Simulator</span>
-          </a>
-          <a 
-            href="#catalog" 
-            className="mobile-nav-link-item"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <Package size={18} color="var(--color-crimson)" />
-            <span>Japanese Equipment Catalog</span>
-          </a>
-          <a 
-            href="#how-it-works" 
-            className="mobile-nav-link-item"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <CheckCircle2 size={18} color="var(--color-gold)" />
-            <span>How It Works (4 Simple Steps)</span>
-          </a>
+        {/* Workspace Mode Switcher inside Drawer */}
+        <div className="drawer-mode-toggle">
+          <div className="drawer-mode-label">Select Workspace Mode:</div>
+          <div className="drawer-mode-buttons">
+            <button
+              type="button"
+              className={`drawer-mode-btn ${workspaceMode === 'trade' ? 'active' : ''}`}
+              onClick={() => {
+                setWorkspaceMode('trade');
+                setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
+              <Building2 size={16} />
+              <span>Trade Portal</span>
+              <span className="drawer-mode-tag live">Live</span>
+            </button>
+            <button
+              type="button"
+              className={`drawer-mode-btn ${workspaceMode === 'protocol' ? 'active' : ''}`}
+              onClick={() => {
+                setWorkspaceMode('protocol');
+                setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
+              <Cpu size={16} />
+              <span>Protocol & AI</span>
+              <span className="drawer-mode-tag testnet">MVP</span>
+            </button>
+          </div>
         </div>
 
+        {/* Live Corridor Status Strip in Mobile Drawer */}
+        <div className="drawer-corridor-status">
+          <div className="drawer-status-item">
+            <span className="live-pulse" />
+            <span>Africa-Japan Corridor: <strong>Active</strong></span>
+          </div>
+          <div className="drawer-status-item">
+            <DollarSign size={14} color="var(--color-gold-deep)" />
+            <span>Guaranteed FX: <strong>1 USD = {fxRate} JPY</strong></span>
+          </div>
+          <div className="drawer-status-item">
+            <Shield size={14} color="var(--color-crimson)" />
+            <span>Escrow Balance: <strong>${(availableBalance || 0).toLocaleString()} USD</strong></span>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Links */}
+        <div className="mobile-nav-links">
+          {workspaceMode === 'trade' ? (
+            <>
+              <a 
+                href="#problems" 
+                className="mobile-nav-link-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <AlertTriangle size={18} color="var(--color-crimson)" />
+                <span>Why DRAGO X (Problems We Fix)</span>
+              </a>
+              <a 
+                href="#payment" 
+                className="mobile-nav-link-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Zap size={18} color="var(--color-gold)" />
+                <span>Pay Supplier Simulator</span>
+              </a>
+              <a 
+                href="#catalog" 
+                className="mobile-nav-link-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Package size={18} color="var(--color-crimson)" />
+                <span>Japanese Equipment Catalog</span>
+              </a>
+              <a 
+                href="#how-it-works" 
+                className="mobile-nav-link-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <CheckCircle2 size={18} color="var(--color-gold)" />
+                <span>How It Works (4 Simple Steps)</span>
+              </a>
+            </>
+          ) : (
+            <>
+              <button 
+                type="button" 
+                className={`mobile-nav-link-item ${protocolStep === 1 ? 'active' : ''}`}
+                onClick={() => { setProtocolStep(1); setMobileMenuOpen(false); }}
+              >
+                <Wallet size={18} color="var(--color-crimson)" />
+                <span>1. Connect Web3 Wallet (Sepolia)</span>
+              </button>
+              <button 
+                type="button" 
+                className={`mobile-nav-link-item ${protocolStep === 2 ? 'active' : ''}`}
+                onClick={() => { setProtocolStep(2); setMobileMenuOpen(false); }}
+              >
+                <Coins size={18} color="var(--color-gold)" />
+                <span>2. Mint Stablecoins (DGX / DGZ)</span>
+              </button>
+              <button 
+                type="button" 
+                className={`mobile-nav-link-item ${protocolStep === 3 ? 'active' : ''}`}
+                onClick={() => { setProtocolStep(3); setMobileMenuOpen(false); }}
+              >
+                <Layers size={18} color="var(--color-crimson)" />
+                <span>3. Mint Synthetics (Gold / Oil)</span>
+              </button>
+              <button 
+                type="button" 
+                className={`mobile-nav-link-item ${protocolStep === 4 ? 'active' : ''}`}
+                onClick={() => { setProtocolStep(4); setMobileMenuOpen(false); }}
+              >
+                <Cpu size={18} color="var(--color-gold)" />
+                <span>4. AI Interest & Risk Engine</span>
+              </button>
+              <button 
+                type="button" 
+                className={`mobile-nav-link-item ${protocolStep === 5 ? 'active' : ''}`}
+                onClick={() => { setProtocolStep(5); setMobileMenuOpen(false); }}
+              >
+                <TrendingUp size={18} color="var(--color-crimson)" />
+                <span>5. Stake & Earn Vaults</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Navigation Drawer Footer Actions */}
         <div className="mobile-nav-footer">
-          <a 
-            href="#payment" 
-            className="btn-colorful" 
-            style={{ width: '100%', textAlign: 'center' }}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <span>Open Payment Calculator</span>
-          </a>
+          {workspaceMode === 'trade' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button 
+                type="button"
+                className="btn-minimal"
+                style={{ width: '100%', justifyContent: 'center' }}
+                onClick={() => { setTopUpModalOpen(true); setMobileMenuOpen(false); }}
+              >
+                <Wallet size={16} color="var(--color-gold-deep)" />
+                <span>Top Up Balance (${(availableBalance || 0).toLocaleString()})</span>
+              </button>
+              <a 
+                href="#payment" 
+                className="btn-colorful" 
+                style={{ width: '100%', textAlign: 'center', justifyContent: 'center' }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span>Pay Supplier Now</span>
+                <ChevronRight size={16} />
+              </a>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {walletConnected ? (
+                <button 
+                  type="button"
+                  className="btn-minimal"
+                  style={{ width: '100%', justifyContent: 'center', borderColor: '#EF4444', color: '#B91C1C' }}
+                  onClick={() => { handleDisconnectWallet(); setMobileMenuOpen(false); }}
+                >
+                  <Lock size={16} />
+                  <span>Disconnect ({walletAddress ? walletAddress.substring(0, 6) : ''}...)</span>
+                </button>
+              ) : (
+                <button 
+                  type="button"
+                  className="btn-colorful"
+                  style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => { handleConnectWallet(); setMobileMenuOpen(false); }}
+                  disabled={isConnectingWallet}
+                >
+                  <Wallet size={16} />
+                  <span>{isConnectingWallet ? 'Connecting...' : 'Connect MetaMask (Sepolia)'}</span>
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

@@ -1,6 +1,8 @@
 // DRAGO X Protocol - Frontend API Integration Client
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Auto-normalize API URL: handles both "https://domain.com" and "https://domain.com/api", with or without trailing slash
+const rawBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').trim().replace(/\/+$/, '');
+const API_BASE_URL = rawBase.endsWith('/api') ? rawBase : `${rawBase}/api`;
 
 /**
  * Helper to handle HTTP requests with standardized JSON responses and error logging

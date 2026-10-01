@@ -1,12 +1,13 @@
 {
   "network": "sepolia",
   "chainId": 11155111,
-  "status": "ready_for_deployment",
-  "rpcUrl": "https://eth-sepolia.g.alchemy.com/v2/alch_yX4sywCIZulctfyTjTEpu",
-  "explorerBase": "https://sepolia.etherscan.io/address/",
+  "deployer": "0x58201B1832275dA90F263073D742c9f67D8617C6",
+  "timestamp": "2026-10-01T23:42:49.718Z",
   "contracts": {
-    "DGXToken": "0xPendingSepoliaDeployment",
-    "DGZToken": "0xPendingSepoliaDeployment",
-    "DragoEscrow": "0xPendingSepoliaDeployment"
-  }
+    "DGXToken": "0x6352F0E7249FFA87EbD342Cf3B9e8d902d406feb",
+    "DGZToken": "0x96a3887355D8987623396E573E57B98E14CF6Fec",
+    "DragoEscrow": "0xa5d148A44b888293bddb848f2036e2Ca3F585911"
+  },
+  "rpcUrl": "https://eth-sepolia.g.alchemy.com/v2/alch_yX4sywCIZulctfyTjTEpu",
+  "explorerBase": "https://sepolia.etherscan.io/address/"
 }

@@ -42,6 +42,11 @@ import {
 } from 'lucide-react';
 import './App.css';
 import { dragoApi } from './api/dragoApi.js';
+import { ethers } from 'ethers';
+import deployedContracts from './contracts/deployed-addresses.json';
+import dgxAbi from './contracts/abis/DGXToken.json';
+import dgzAbi from './contracts/abis/DGZToken.json';
+import escrowAbi from './contracts/abis/DragoEscrow.json';
 
 export default function App() {
   // Navigation & Workspace Mode State
@@ -263,6 +268,55 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
+  const fetchTokenBalances = async (account) => {
+    if (typeof window !== 'undefined' && window.ethereum && account) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        if (deployedContracts.contracts.DGXToken && deployedContracts.contracts.DGXToken.startsWith('0x')) {
+          const dgxContract = new ethers.Contract(deployedContracts.contracts.DGXToken, dgxAbi, provider);
+          const dgxBal = await dgxContract.balanceOf(account);
+          setStableBalances(prev => ({ ...prev, dgx: +parseFloat(ethers.formatEther(dgxBal)).toFixed(2) }));
+        }
+        if (deployedContracts.contracts.DGZToken && deployedContracts.contracts.DGZToken.startsWith('0x')) {
+          const dgzContract = new ethers.Contract(deployedContracts.contracts.DGZToken, dgzAbi, provider);
+          const dgzBal = await dgzContract.balanceOf(account);
+          setStableBalances(prev => ({ ...prev, dgz: +parseFloat(ethers.formatEther(dgzBal)).toFixed(2) }));
+        }
+      } catch (e) {
+        console.warn('Could not read token balances:', e);
+      }
+    }
+  };
+
+  const addTokenToMetaMask = async (symbol) => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      const isDgx = symbol === 'DGX';
+      const address = isDgx 
+        ? deployedContracts.contracts.DGXToken 
+        : deployedContracts.contracts.DGZToken;
+      try {
+        const wasAdded = await window.ethereum.request({
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              address: address,
+              symbol: symbol,
+              decimals: 18,
+            },
+          },
+        });
+        if (wasAdded) {
+          showToast(`${symbol} Added`, `${symbol} token added to your MetaMask wallet.`, 'success');
+        }
+      } catch (error) {
+        showToast('Wallet Notice', error.message || 'Could not add token to MetaMask.', 'info');
+      }
+    } else {
+      showToast('MetaMask Required', 'Please connect MetaMask to import this token.', 'warning');
+    }
+  };
+
   // Check for existing wallet connection and listen for account/chain changes
   useEffect(() => {
     if (typeof window !== 'undefined' && window.ethereum) {
@@ -287,6 +341,8 @@ export default function App() {
               });
               const ethBal = parseInt(balHex, 16) / 1e18;
               setStableBalances(prev => ({ ...prev, eth: +ethBal.toFixed(4) }));
+
+              await fetchTokenBalances(account);
             } catch (e) {
               console.warn('Wallet check warning:', e);
             }
@@ -302,6 +358,7 @@ export default function App() {
         } else {
           setWalletAddress(accounts[0]);
           setWalletConnected(true);
+          fetchTokenBalances(accounts[0]);
           showToast('Account Changed', `Switched to ${accounts[0].substring(0, 6)}...${accounts[0].substring(accounts[0].length - 4)}`, 'info');
         }
       };
@@ -375,6 +432,7 @@ export default function App() {
             });
             const ethBal = parseInt(balHex, 16) / 1e18;
             setStableBalances(prev => ({ ...prev, eth: +ethBal.toFixed(4) }));
+            await fetchTokenBalances(account);
           } catch (e) {
             console.warn('Could not fetch ETH balance:', e);
           }
@@ -414,7 +472,7 @@ export default function App() {
     showToast('Wallet Disconnected', 'Disconnected from Ethereum Sepolia session.', 'info');
   };
 
-  const handleMintStable = (e) => {
+  const handleMintStable = async (e) => {
     e.preventDefault();
     const amt = parseFloat(mintStableAmount);
     if (!amt || isNaN(amt) || amt <= 0) {
@@ -423,6 +481,68 @@ export default function App() {
     }
 
     setIsMintingStable(true);
+
+    // If connected to real Web3 wallet on Sepolia, trigger on-chain contract faucet
+    if (typeof window !== 'undefined' && window.ethereum && walletConnected && walletAddress) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const isDgx = mintStableType === 'DGX';
+        const contractAddress = isDgx 
+          ? deployedContracts.contracts.DGXToken 
+          : deployedContracts.contracts.DGZToken;
+        const abi = isDgx ? dgxAbi : dgzAbi;
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+        const amountWei = ethers.parseEther(amt.toString());
+        showToast(
+          'Confirm in MetaMask',
+          `Please confirm transaction in your wallet to mint ${amt.toLocaleString()} ${mintStableType} on Sepolia.`,
+          'info'
+        );
+
+        const tx = await contract.faucet(amountWei);
+        showToast(
+          'Transaction Sent',
+          `Broadcasting ${mintStableType} mint to Sepolia. Tx: ${tx.hash.substring(0, 10)}...`,
+          'info'
+        );
+
+        const receipt = await tx.wait();
+
+        // Query updated on-chain balance
+        const updatedBalWei = await contract.balanceOf(walletAddress);
+        const updatedBal = parseFloat(ethers.formatEther(updatedBalWei));
+
+        if (isDgx) {
+          setStableBalances(prev => ({ ...prev, dgx: +updatedBal.toFixed(2) }));
+        } else {
+          setStableBalances(prev => ({ ...prev, dgz: +updatedBal.toFixed(2) }));
+        }
+
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#D4AF37', '#7B1113', '#10B981']
+        });
+
+        showToast(
+          `${mintStableType} Confirmed On-Chain`,
+          `Successfully minted ${amt.toLocaleString()} ${mintStableType} on Sepolia testnet! Block: ${receipt.blockNumber}`,
+          'success'
+        );
+        setIsMintingStable(false);
+        return;
+      } catch (err) {
+        console.warn('Real contract transaction rejected or failed:', err);
+        showToast('On-Chain Notice', err.reason || err.message || 'Transaction was rejected in MetaMask.', 'error');
+        setIsMintingStable(false);
+        return;
+      }
+    }
+
+    // Fallback simulation if not connected to live wallet
     setTimeout(() => {
       if (mintStableType === 'DGX') {
         setStableBalances(prev => ({ ...prev, dgx: +(prev.dgx + amt).toFixed(2) }));
@@ -437,13 +557,12 @@ export default function App() {
         origin: { y: 0.6 },
         colors: ['#D4AF37', '#7B1113', '#10B981']
       });
-      const tx = '0x' + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
       showToast(
         `${mintStableType} Stablecoin Minted`,
-        `Successfully minted ${amt.toLocaleString()} ${mintStableType} backed by ${mintStableRail}. On-chain Tx: ${tx.substring(0, 10)}...`,
+        `Successfully minted ${amt.toLocaleString()} ${mintStableType} backed by ${mintStableRail}.`,
         'success'
       );
-    }, 900);
+    }, 700);
   };
 
   const handleMintSynthetic = (e) => {
@@ -2043,6 +2162,98 @@ export default function App() {
             </div>
           </div>
 
+          {/* VERIFIED SEPOLIA SMART CONTRACTS BAR */}
+          <div className="verified-contracts-bar">
+            <div className="verified-bar-header">
+              <div className="verified-title-group">
+                <CheckCircle2 size={18} color="#10B981" />
+                <span className="verified-title">Live Verified Smart Contracts (Ethereum Sepolia Testnet)</span>
+              </div>
+              <div className="badge-pill badge-emerald">
+                <span className="live-pulse" />
+                <span>Alchemy Sepolia Live</span>
+              </div>
+            </div>
+
+            <div className="verified-contracts-grid">
+              <div className="verified-contract-card">
+                <div className="contract-card-top">
+                  <span className="contract-role">USD Pegged Currency</span>
+                  <button 
+                    type="button" 
+                    className="add-metamask-btn" 
+                    onClick={() => addTokenToMetaMask('DGX')}
+                    title="Add DGX to MetaMask"
+                  >
+                    <PlusCircle size={12} />
+                    <span>Add to MetaMask</span>
+                  </button>
+                </div>
+                <div className="contract-name">DGX Token (1:1 USD)</div>
+                <div className="contract-address-row">
+                  <code className="contract-code">{deployedContracts.contracts.DGXToken}</code>
+                  <a 
+                    href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGXToken}`} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="contract-link" 
+                    title="View on Sepolia Etherscan"
+                  >
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
+              </div>
+
+              <div className="verified-contract-card">
+                <div className="contract-card-top">
+                  <span className="contract-role">JPY Pegged Currency</span>
+                  <button 
+                    type="button" 
+                    className="add-metamask-btn" 
+                    onClick={() => addTokenToMetaMask('DGZ')}
+                    title="Add DGZ to MetaMask"
+                  >
+                    <PlusCircle size={12} />
+                    <span>Add to MetaMask</span>
+                  </button>
+                </div>
+                <div className="contract-name">DGZ Token (1:1 JPY)</div>
+                <div className="contract-address-row">
+                  <code className="contract-code">{deployedContracts.contracts.DGZToken}</code>
+                  <a 
+                    href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGZToken}`} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="contract-link" 
+                    title="View on Sepolia Etherscan"
+                  >
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
+              </div>
+
+              <div className="verified-contract-card">
+                <div className="contract-card-top">
+                  <span className="contract-role">Commercial Settlement</span>
+                  <span className="badge-pill badge-gold" style={{ fontSize: '0.68rem', padding: '1px 6px' }}>Zero Counterparty Risk</span>
+                </div>
+                <div className="contract-name">Drago Escrow Vault</div>
+                <div className="contract-address-row">
+                  <code className="contract-code">{deployedContracts.contracts.DragoEscrow}</code>
+                  <a 
+                    href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DragoEscrow}`} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="contract-link" 
+                    title="View on Sepolia Etherscan"
+                  >
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* 3. TWO-COLUMN INTERACTIVE PROTOCOL GRID */}
           <div className="protocol-grid-layout">
             {/* CARD 1: MINT STABLECOINS */}
@@ -2136,8 +2347,30 @@ export default function App() {
                       <span className="value">~0.0018 ETH (Free Testnet)</span>
                     </div>
                     <div className="spec-line-item">
-                      <span className="label">Smart Contract:</span>
-                      <span className="value gold" style={{ fontFamily: 'monospace' }}>0x8910...b2c1 (Verified)</span>
+                      <span className="label">Sepolia Smart Contract:</span>
+                      <a 
+                        href={`https://sepolia.etherscan.io/address/${mintStableType === 'DGX' ? deployedContracts.contracts.DGXToken : deployedContracts.contracts.DGZToken}`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="value gold" 
+                        style={{ fontFamily: 'monospace', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                        title="View verified contract on Sepolia Etherscan"
+                      >
+                        {(mintStableType === 'DGX' ? deployedContracts.contracts.DGXToken : deployedContracts.contracts.DGZToken).substring(0, 10)}... (Verified)
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                    <div className="spec-line-item" style={{ marginTop: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span className="label">Add to MetaMask:</span>
+                      <button 
+                        type="button" 
+                        className="btn-minimal" 
+                        style={{ padding: '3px 8px', fontSize: '0.72rem', height: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                        onClick={() => addTokenToMetaMask(mintStableType)}
+                      >
+                        <PlusCircle size={12} color="var(--color-gold-deep)" />
+                        <span>Add {mintStableType} to Wallet</span>
+                      </button>
                     </div>
                   </div>
 

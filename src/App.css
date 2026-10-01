@@ -3153,6 +3153,139 @@
   color: #FCA5A5;
 }
 
+/* Verified Sepolia Smart Contracts Bar */
+.verified-contracts-bar {
+  background: #FFFFFF;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 10px 30px rgba(123, 17, 19, 0.05);
+}
+
+.verified-bar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.verified-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.verified-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.verified-contracts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.verified-contract-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.verified-contract-card:hover {
+  background: #FFFFFF;
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 6px 18px rgba(123, 17, 19, 0.06);
+}
+
+.contract-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.contract-role {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.add-metamask-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #FFFFFF;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-crimson);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-metamask-btn:hover {
+  background: #FFFDF0;
+  border-color: var(--color-crimson);
+  transform: translateY(-1px);
+}
+
+.contract-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.contract-address-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 6px 10px;
+  gap: 6px;
+}
+
+.contract-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem;
+  color: var(--color-crimson);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contract-link {
+  color: var(--color-gold-deep);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.contract-link:hover {
+  color: var(--color-crimson);
+}
+
+@media (max-width: 900px) {
+  .verified-contracts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Two-Column Interactive Protocol Grid */
 .protocol-grid-layout {
   display: grid;

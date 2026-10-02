@@ -33,6 +33,8 @@
   /* Secondary Accents */
   --color-emerald: #10B981;
   --color-emerald-light: #ECFDF5;
+  --color-indigo: #4F46E5;
+  --color-indigo-light: #EEF2FF;
   --color-cyan: #06B6D4;
   --color-amber: #D97706;
   
@@ -202,9 +204,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .badge-emerald {
-  background: #FDF2F2;
-  color: #7B1113;
-  border: 1px solid rgba(123, 17, 19, 0.25);
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.28);
 }
 
 .badge-indigo {

@@ -3094,13 +3094,18 @@ export default function App() {
 
                 {/* AI Rates Comparison */}
                 <div className="ai-rates-comparison-box">
-                  <div className="rate-col">
-                    <span className="rate-val-highlight">4.8% APR</span>
-                    <span className="rate-col-sub" style={{ color: 'var(--color-crimson)' }}>DRAGO X AI Dynamic Rate</span>
+                  <div className="rate-col drago-col">
+                    <span className="rate-col-tag ai-tag">DRAGO X AI</span>
+                    <span className="rate-val-highlight">4.8%</span>
+                    <span className="rate-col-sub">APR - AI Dynamic Rate</span>
                   </div>
-                  <div className="rate-col">
-                    <span className="rate-val-highlight bank">14.5% APR</span>
-                    <span className="rate-col-sub">Traditional Bank Letter of Credit</span>
+                  <div className="rate-col-divider">
+                    <div className="rate-col-divider-badge">VS</div>
+                  </div>
+                  <div className="rate-col bank-col">
+                    <span className="rate-col-tag bank-tag">BANK LC</span>
+                    <span className="rate-val-highlight bank">14.5%</span>
+                    <span className="rate-col-sub">APR - Traditional Bank</span>
                   </div>
                 </div>
 
@@ -3177,33 +3182,34 @@ export default function App() {
                     className={`vault-tab-btn ${activeStakingPool === 'DGS' ? 'active' : ''}`}
                     onClick={() => setActiveStakingPool('DGS')}
                   >
-                    <span>DGS Liquidity Vault (12.4% APY)</span>
+                    <span className="tab-vault-name">DGS Liquidity Vault</span>
+                    <span className="tab-vault-apy">12.4% APY</span>
                   </button>
                   <button 
                     type="button" 
                     className={`vault-tab-btn ${activeStakingPool === 'DRGX' ? 'active' : ''}`}
                     onClick={() => setActiveStakingPool('DRGX')}
                   >
-                    <span>DRGX Governance (18.6% APY)</span>
+                    <span className="tab-vault-name">DRGX Governance</span>
+                    <span className="tab-vault-apy">18.6% APY</span>
                   </button>
                 </div>
 
                 {/* Real-Time Accrued Yield Box */}
                 <div className="vault-yield-box">
                   <div>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: 2 }}>
+                    <div className="vault-yield-lbl">
                       Live Pending Rewards ({activeStakingPool})
-                    </span>
+                    </div>
                     <div className="yield-num-ticking">
                       +{activeStakingPool === 'DGS' ? earnedYield.dgs.toFixed(3) : earnedYield.drgx.toFixed(3)} {activeStakingPool}
                     </div>
                   </div>
                   <button 
                     type="button" 
-                    className="btn-minimal"
+                    className="btn-harvest"
                     onClick={handleHarvestYield}
                     disabled={isHarvesting}
-                    style={{ padding: '8px 14px', fontSize: '0.82rem' }}
                   >
                     {isHarvesting ? 'Harvesting...' : 'Harvest Rewards'}
                   </button>

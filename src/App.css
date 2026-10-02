@@ -492,31 +492,40 @@
 
 .hero-stats-strip {
   display: flex;
-  gap: 32px;
-  padding: 18px 24px;
+  gap: 0;
   background: #FFFFFF;
-  border-radius: 18px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-subtle);
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06), 0 1px 4px rgba(0,0,0,0.03);
   width: fit-content;
+  overflow: hidden;
 }
 
 .hero-stat-unit {
   display: flex;
   flex-direction: column;
+  padding: 20px 28px;
+  border-right: 1px solid rgba(226, 232, 240, 0.8);
+  position: relative;
+}
+
+.hero-stat-unit:last-child {
+  border-right: none;
 }
 
 .hero-stat-number {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--text-dark);
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .hero-stat-desc {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
   font-weight: 500;
+  margin-top: 3px;
 }
 
 .hero-cta-group {
@@ -804,16 +813,20 @@
 }
 
 .section-eyebrow {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-indigo);
-  margin-bottom: 8px;
-  display: flex;
+  letter-spacing: 0.12em;
+  color: var(--color-crimson);
+  margin-bottom: 12px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
+  background: rgba(123, 17, 19, 0.06);
+  border: 1px solid rgba(123, 17, 19, 0.15);
+  padding: 6px 14px;
+  border-radius: 9999px;
 }
 
 .section-title {
@@ -839,9 +852,9 @@
 }
 
 .tab-btn {
-  padding: 10px 22px;
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
+  padding: 11px 24px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-light);
   background: #FFFFFF;
   color: var(--text-muted);
   font-weight: 600;
@@ -850,20 +863,25 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.25s ease;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: var(--shadow-subtle);
+  letter-spacing: 0.01em;
 }
 
 .tab-btn:hover {
   background: #F8FAFC;
   color: var(--text-dark);
+  border-color: rgba(123, 17, 19, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
 }
 
 .tab-btn.active {
-  background: var(--grad-crimson);
+  background: linear-gradient(135deg, #4A0E17 0%, #7B1113 60%, #9E1B1E 100%);
   color: #FFFDF0;
   border-color: rgba(212, 175, 55, 0.45);
-  box-shadow: 0 4px 18px rgba(123, 17, 19, 0.28);
+  box-shadow: 0 6px 22px rgba(123, 17, 19, 0.32), 0 0 0 1px rgba(212, 175, 55, 0.3);
+  transform: translateY(-1px);
 }
 
 /* Playground Cards Grid */
@@ -1404,10 +1422,7 @@
 
 /* Stat divider in hero stats */
 .stat-divider {
-  width: 1px;
-  height: 38px;
-  background: #E2E8F0;
-  flex-shrink: 0;
+  display: none;
 }
 
 /* 6. TOKEN ECOSYSTEM SHOWCASE (5 Stablecoins & 5 Synthetics Carousel) */
@@ -1539,17 +1554,18 @@
 }
 
 .step-number-bubble {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #F1F5F9;
-  color: var(--color-indigo);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4A0E17 0%, #7B1113 100%);
+  color: #FFFDF0;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(123, 17, 19, 0.22);
 }
 
 .step-title {
@@ -1562,6 +1578,7 @@
 .step-desc {
   font-size: 0.86rem;
   color: var(--text-muted);
+  line-height: 1.5;
 }
 
 /* 8. FOOTER */
@@ -2052,8 +2069,16 @@
   .hero-stats-strip {
     flex-direction: column;
     width: 100%;
-    gap: 10px;
-    padding: 14px;
+  }
+
+  .hero-stat-unit {
+    padding: 14px 16px;
+    border-right: none;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  }
+
+  .hero-stat-unit:last-child {
+    border-bottom: none;
   }
 
   .hero-stat-number {
@@ -3423,11 +3448,11 @@
 /* Guided 5-Step Interactive Roadmap Bar */
 .guided-roadmap-card {
   background: #FFFFFF;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 22px;
   padding: 24px 28px;
   margin-bottom: 32px;
-  box-shadow: 0 8px 30px rgba(123, 17, 19, 0.04);
+  box-shadow: 0 6px 24px rgba(123, 17, 19, 0.05), 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .roadmap-header-row {
@@ -3505,18 +3530,32 @@
 
 /* Web3 Live Wallet Bar */
 .web3-wallet-banner {
-  background: linear-gradient(135deg, #1C0508 0%, #3D090E 50%, #1C0508 100%);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: 20px;
+  background: linear-gradient(135deg, #0F0205 0%, #2E060C 40%, #4A0E17 80%, #2E060C 100%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 22px;
   padding: 24px 28px;
   color: #FFFDF0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 36px;
-  box-shadow: 0 12px 40px rgba(74, 14, 23, 0.25);
+  box-shadow: 0 16px 50px rgba(74, 14, 23, 0.35), 0 0 0 1px rgba(212, 175, 55, 0.15) inset;
   flex-wrap: wrap;
   gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.web3-wallet-banner::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .wallet-banner-left {
@@ -3800,18 +3839,37 @@
 .protocol-card {
   background: #FFFFFF;
   border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 30px;
-  box-shadow: 0 10px 30px rgba(123, 17, 19, 0.04);
+  box-shadow: 0 4px 20px rgba(123, 17, 19, 0.04), 0 1px 4px rgba(0,0,0,0.02);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.protocol-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-crimson) 0%, var(--color-gold) 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .protocol-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 40px rgba(123, 17, 19, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 48px rgba(123, 17, 19, 0.10), 0 4px 12px rgba(212, 175, 55, 0.08);
+  border-color: rgba(212, 175, 55, 0.45);
+}
+
+.protocol-card:hover::before {
+  opacity: 1;
 }
 
 .card-top-heading {
@@ -3991,15 +4049,17 @@
 
 /* AI Dynamic Interest Rate Gauge */
 .ai-rates-comparison-box {
-  background: linear-gradient(135deg, rgba(123, 17, 19, 0.04) 0%, rgba(212, 175, 55, 0.08) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 16px;
-  padding: 18px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(212, 175, 55, 0.35);
+  border-radius: 18px;
+  padding: 4px;
   margin: 18px 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  text-align: center;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(123, 17, 19, 0.06);
 }
 
 .rate-col {
@@ -4007,70 +4067,199 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  padding: 18px 14px;
+  border-radius: 14px;
+}
+
+.rate-col.drago-col {
+  background: linear-gradient(135deg, rgba(123, 17, 19, 0.04) 0%, rgba(212, 175, 55, 0.08) 100%);
+}
+
+.rate-col.bank-col {
+  background: #F8FAFC;
+}
+
+.rate-col-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.rate-col-divider-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #64748B;
 }
 
 .rate-val-highlight {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--color-crimson);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .rate-val-highlight.bank {
-  color: #9CA3AF;
+  color: #94A3B8;
   text-decoration: line-through;
+  font-size: 1.5rem;
+}
+
+.rate-col-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.rate-col-tag.ai-tag {
+  background: rgba(123, 17, 19, 0.1);
+  color: var(--color-crimson);
+}
+
+.rate-col-tag.bank-tag {
+  background: #E5E7EB;
+  color: #6B7280;
 }
 
 .rate-col-sub {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
   font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
 }
 
 /* Staking Pools Section */
 .staking-vault-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.04);
-  padding: 4px;
-  border-radius: 12px;
-  margin-bottom: 18px;
+  gap: 6px;
+  background: #F1F5F9;
+  padding: 5px;
+  border-radius: 14px;
+  border: 1px solid #E2E8F0;
+  margin-bottom: 20px;
 }
 
 .vault-tab-btn {
-  padding: 8px 12px;
-  border-radius: 9px;
-  font-size: 0.84rem;
-  font-weight: 600;
-  border: none;
+  padding: 10px 8px;
+  border-radius: 10px;
+  font-size: 0.80rem;
+  font-weight: 700;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  min-width: 0;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .vault-tab-btn.active {
   background: #FFFFFF;
   color: var(--color-crimson);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 3px 10px rgba(123, 17, 19, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.vault-tab-btn .tab-vault-name {
+  font-weight: 700;
+  font-size: 0.80rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.vault-tab-btn .tab-vault-apy {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #059669;
+  letter-spacing: 0.01em;
+}
+
+.vault-tab-btn.active .tab-vault-apy {
+  color: var(--color-gold-deep);
 }
 
 .vault-yield-box {
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  border-radius: 14px;
-  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(5, 150, 105, 0.08) 100%);
+  border: 1.5px solid rgba(16, 185, 129, 0.28);
+  border-radius: 16px;
+  padding: 16px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  gap: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.08);
 }
 
 .yield-num-ticking {
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #059669;
   font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.vault-yield-lbl {
+  font-size: 0.74rem;
+  color: #065F46;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.btn-harvest {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #FFFFFF;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 3px 10px rgba(5, 150, 105, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-harvest:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(5, 150, 105, 0.4);
+}
+
+.btn-harvest:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Responsive adjustments */

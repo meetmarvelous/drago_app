@@ -1187,44 +1187,27 @@ export default function App() {
             </div>
           </div>
 
-          {/* Desktop & Tablet Workspace Mode Switcher */}
-          <div className="nav-mode-selector">
-            <button 
-              type="button"
-              className={`mode-tab-btn ${workspaceMode === 'trade' ? 'active' : ''}`}
-              onClick={() => {
-                setWorkspaceMode('trade');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              title="B2B Commercial Trade & Supplier Settlement OS"
-            >
-              <Building2 size={15} />
-              <span>Trade Portal</span>
-              <span className="mode-tag-pill live">Live</span>
-            </button>
-            <button 
-              type="button"
-              className={`mode-tab-btn ${workspaceMode === 'protocol' ? 'active' : ''}`}
-              onClick={() => {
-                setWorkspaceMode('protocol');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              title="Protocol & AI Assets Web3 MVP Hub"
-            >
-              <Cpu size={15} />
-              <span>Protocol & AI</span>
-              <span className="mode-tag-pill testnet">MVP</span>
-            </button>
-          </div>
-
           {/* Desktop Nav Links */}
           <nav className="nav-links">
             {workspaceMode === 'trade' ? (
               <>
                 <a href="#problems" className="nav-link-item">Why DRAGO X</a>
-                <a href="#payment" className="nav-link-item active">Pay Supplier</a>
+                <a href="#payment" className="nav-link-item">Pay Supplier</a>
                 <a href="#catalog" className="nav-link-item">Catalog</a>
                 <a href="#how-it-works" className="nav-link-item">How It Works</a>
+                <button 
+                  type="button" 
+                  className="nav-link-item nav-mode-link-btn"
+                  onClick={() => {
+                    setWorkspaceMode('protocol');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  title="Switch to Web3 Protocol & Sepolia Smart Contracts"
+                >
+                  <Cpu size={14} />
+                  <span>Web3 Protocol</span>
+                  <span className="nav-mode-badge testnet">MVP</span>
+                </button>
               </>
             ) : (
               <>
@@ -1233,6 +1216,19 @@ export default function App() {
                 <button type="button" className={`nav-link-item ${protocolStep === 3 ? 'active' : ''}`} onClick={() => setProtocolStep(3)}>3. Synthetics</button>
                 <button type="button" className={`nav-link-item ${protocolStep === 4 ? 'active' : ''}`} onClick={() => setProtocolStep(4)}>4. AI Oracle</button>
                 <button type="button" className={`nav-link-item ${protocolStep === 5 ? 'active' : ''}`} onClick={() => setProtocolStep(5)}>5. Staking</button>
+                <button 
+                  type="button" 
+                  className="nav-link-item nav-mode-link-btn"
+                  onClick={() => {
+                    setWorkspaceMode('trade');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  title="Switch to B2B Commercial Trade Portal"
+                >
+                  <Building2 size={14} />
+                  <span>Trade Portal</span>
+                  <span className="nav-mode-badge live">Live</span>
+                </button>
               </>
             )}
           </nav>
@@ -1536,6 +1532,61 @@ export default function App() {
           )}
         </div>
       </div>
+
+      {/* 2.5 DEDICATED WORKSPACE MODE SWITCHER (Responsive across Desktop, Tablet & Mobile) */}
+      <section className="workspace-mode-bar" aria-label="Select Trade or Protocol Workspace">
+        <div className="workspace-mode-container">
+          <div className="workspace-mode-segmented">
+            <button
+              type="button"
+              className={`workspace-mode-tab ${workspaceMode === 'trade' ? 'active' : ''}`}
+              onClick={() => {
+                setWorkspaceMode('trade');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              aria-pressed={workspaceMode === 'trade'}
+              id="workspace-mode-trade-btn"
+            >
+              <div className="workspace-mode-tab-content">
+                <div className="workspace-mode-icon-circle">
+                  <Building2 size={18} />
+                </div>
+                <div className="workspace-mode-info">
+                  <div className="workspace-mode-header-line">
+                    <span className="workspace-mode-name">B2B Trade Portal</span>
+                    <span className="workspace-mode-pill live">Live Corridor</span>
+                  </div>
+                  <span className="workspace-mode-caption">Commercial Escrow & Instant Settlement OS</span>
+                </div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              className={`workspace-mode-tab ${workspaceMode === 'protocol' ? 'active' : ''}`}
+              onClick={() => {
+                setWorkspaceMode('protocol');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              aria-pressed={workspaceMode === 'protocol'}
+              id="workspace-mode-protocol-btn"
+            >
+              <div className="workspace-mode-tab-content">
+                <div className="workspace-mode-icon-circle">
+                  <Cpu size={18} />
+                </div>
+                <div className="workspace-mode-info">
+                  <div className="workspace-mode-header-line">
+                    <span className="workspace-mode-name">Protocol & AI Hub</span>
+                    <span className="workspace-mode-pill testnet">Sepolia Web3 MVP</span>
+                  </div>
+                  <span className="workspace-mode-caption">Real Smart Contracts, RWA & AI Oracle</span>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* WORKSPACE MODE CONDITIONAL RENDERING */}
       {workspaceMode === 'trade' ? (

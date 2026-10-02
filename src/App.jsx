@@ -2572,9 +2572,9 @@ export default function App() {
               </div>
               <div className="wallet-info-main">
                 <div className="wallet-status-badge">
-                  <span className="wallet-status-dot" style={{ background: walletConnected ? '#10B981' : '#EF4444' }} />
-                  <span style={{ color: walletConnected ? '#34D399' : '#FCA5A5' }}>
-                    {walletConnected ? `${walletNetwork} Connected` : 'Web3 Wallet Disconnected'}
+                  <span className="wallet-status-dot" style={{ background: walletConnected ? '#10B981' : '#F59E0B' }} />
+                  <span style={{ color: walletConnected ? '#34D399' : '#FCD34D' }}>
+                    {walletConnected ? `${walletNetwork} Connected` : 'Interactive Demo Sandbox Mode'}
                   </span>
                 </div>
                 {walletConnected ? (
@@ -2590,8 +2590,8 @@ export default function App() {
                     <Copy size={13} />
                   </div>
                 ) : (
-                  <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
-                    Connect your MetaMask or Web3 Testnet wallet to mint assets and access AI liquidity vaults.
+                  <div style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.4 }}>
+                    Pre-loaded with $5,000 DGX sandbox funds for instant zero-gas testing. Connect MetaMask to test real Ethereum Sepolia smart contracts.
                   </div>
                 )}
               </div>
@@ -2831,9 +2831,15 @@ export default function App() {
               <div>
                 <div className="card-top-heading">
                   <div className="card-title-group">
-                    <div className="badge-pill badge-crimson" style={{ marginBottom: 8 }}>
-                      <Coins size={13} />
-                      <span>Step 2 • Native Trade Currencies</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+                      <div className="badge-pill badge-crimson">
+                        <Coins size={13} />
+                        <span>Step 2 • Native Trade Currencies</span>
+                      </div>
+                      <span className="badge-pill badge-emerald">
+                        <CheckCircle2 size={12} />
+                        <span>Sepolia On-Chain Active</span>
+                      </span>
                     </div>
                     <h3>Mint Protocol Stablecoins</h3>
                     <p>Issue atomic trade liquidity pegged 1:1 to US Dollars or Japanese Yen with zero bank correspondent fees.</p>
@@ -2977,12 +2983,23 @@ export default function App() {
               <div>
                 <div className="card-top-heading">
                   <div className="card-title-group">
-                    <div className="badge-pill badge-gold" style={{ marginBottom: 8 }}>
-                      <Sparkles size={13} />
-                      <span>Step 3 • Real-World Asset Tokenization</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+                      <div className="badge-pill badge-gold">
+                        <Sparkles size={13} />
+                        <span>Step 3 • Real-World Asset Tokenization</span>
+                      </div>
+                      <span className="badge-pill badge-indigo">
+                        <Info size={12} />
+                        <span>Protocol Sandbox Beta</span>
+                      </span>
                     </div>
                     <h3>Mint Synthetic RWAs</h3>
-                    <p>Hedge cross-border trade and currency volatility by minting synthetic physical gold and crude oil on-chain.</p>
+                    <p>
+                      Hedge cross-border trade and currency volatility by minting synthetic physical gold and crude oil on-chain.
+                      <span style={{ display: 'block', marginTop: 4, fontSize: '0.78rem', color: 'var(--color-crimson)', fontWeight: 600 }}>
+                        • 150% DGX Over-Collateralized Sandbox Preview (ERC-20 Gold/Oil tokens deploy in Phase 2)
+                      </span>
+                    </p>
                   </div>
                   <div className="brand-icon-box" style={{ width: 38, height: 38, minWidth: 38 }}>
                     <Flame size={18} />
@@ -3175,12 +3192,23 @@ export default function App() {
               <div>
                 <div className="card-top-heading">
                   <div className="card-title-group">
-                    <div className="badge-pill badge-gold" style={{ marginBottom: 8 }}>
-                      <TrendingUp size={13} />
-                      <span>Step 5 • Trade Liquidity Vaults</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+                      <div className="badge-pill badge-gold">
+                        <TrendingUp size={13} />
+                        <span>Step 5 • Trade Liquidity Vaults</span>
+                      </div>
+                      <span className="badge-pill badge-indigo">
+                        <Activity size={12} />
+                        <span>Simulated Yield Engine</span>
+                      </span>
                     </div>
                     <h3>Stake & Earn Protocol Yield</h3>
-                    <p>Provide liquidity to cross-border settlement pools and earn native yield from international trade clearance fees.</p>
+                    <p>
+                      Provide liquidity to cross-border settlement pools and earn native yield from international trade clearance fees.
+                      <span style={{ display: 'block', marginTop: 4, fontSize: '0.78rem', color: 'var(--color-crimson)', fontWeight: 600 }}>
+                        • Live compounding yield calculation demo; native DGS staking contract deploys in Phase 2
+                      </span>
+                    </p>
                   </div>
                   <div className="brand-icon-box" style={{ width: 38, height: 38, minWidth: 38 }}>
                     <BarChart3 size={18} />

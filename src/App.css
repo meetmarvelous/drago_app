@@ -96,29 +96,27 @@
 }
 
 .brand-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  background: var(--grad-crimson);
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-gold);
-  box-shadow: 0 4px 14px rgba(123, 17, 19, 0.25);
-  transition: transform 0.3s ease;
-  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible;
+  flex-shrink: 0;
 }
 
 .brand-icon-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(123, 17, 19, 0.25));
 }
 
 .nav-brand:hover .brand-icon-box {
-  transform: rotate(-6deg) scale(1.05);
-  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
+  transform: scale(1.06);
 }
 
 .brand-text-box {

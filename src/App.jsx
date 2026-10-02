@@ -2557,8 +2557,8 @@ export default function App() {
         <div className="arch-grid">
           <div className="arch-visual-box">
             <img 
-              src="/drago_ai_core.jpg" 
-              alt="DRAGO X Trade Route" 
+              src="/drago_banner.jpg" 
+              alt="DRAGO X Global Trade Finance Platform" 
               className="arch-image"
             />
             <div style={{ padding: 24, background: '#FFFFFF' }}>
@@ -3546,14 +3546,21 @@ export default function App() {
             </div>
 
             <div>
-              <h5 style={{ fontSize: '0.95rem', marginBottom: 16 }}>Enterprise Support</h5>
+              <h5 style={{ fontSize: '0.95rem', marginBottom: 16 }}>Executive & Enterprise Desk</h5>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-                <span>CEO: John Ebster-Davids (ex-Barclays)</span>
-                <span>Email: dragoxprotocol@proton.me</span>
-                <div style={{ marginTop: 8 }}>
-                  <button className="btn-minimal" onClick={copyAddress} style={{ fontSize: '0.8rem', padding: '8px 14px' }}>
-                    {copied ? <Check size={14} color="var(--color-crimson)" /> : <Copy size={14} />}
-                    <span>{copied ? 'Email Copied' : 'Contact Trade Desk'}</span>
+                <span><strong>John Ebster-Davids (JED)</strong> — Founder & CEO</span>
+                <span>Former Barclays Banking Leader • FinTech Strategist</span>
+                <a href="mailto:dragoxprotocol@proton.me" style={{ color: 'var(--color-crimson)', textDecoration: 'none', fontWeight: 600 }}>
+                  dragoxprotocol@proton.me
+                </a>
+                <a href="https://www.linkedin.com/in/john-ebster-davids-807aaa293/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span>Founder LinkedIn</span>
+                  <ExternalLink size={12} />
+                </a>
+                <div style={{ marginTop: 6 }}>
+                  <button className="btn-minimal" onClick={copyAddress} style={{ fontSize: '0.8rem', padding: '6px 12px' }}>
+                    {copied ? <Check size={13} color="var(--color-crimson)" /> : <Copy size={13} />}
+                    <span>{copied ? 'Email Copied' : 'Copy Direct Desk Email'}</span>
                   </button>
                 </div>
               </div>
@@ -3562,14 +3569,14 @@ export default function App() {
 
           <div className="footer-bottom">
             <div>
-              © 2026 DRAGO X Protocol. All rights reserved. Registered under FSC Mauritius Sandbox guidelines.
+              © 2026 DRAGO X Protocol (dragox.io). All rights reserved. Registered under FSC Mauritius Sandbox guidelines.
             </div>
             <div style={{ display: 'flex', gap: 20 }}>
               <span>Africa-Japan Trade Corridor</span>
               <span>•</span>
               <span>Guaranteed JPY Settlement</span>
               <span>•</span>
-              <span>Bank-Grade Escrow</span>
+              <span>Ethereum Sepolia Audited Contracts</span>
             </div>
           </div>
         </div>

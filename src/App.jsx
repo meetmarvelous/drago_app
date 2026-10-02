@@ -2850,16 +2850,22 @@ export default function App() {
                     className={`asset-tab-pill ${mintStableType === 'DGX' ? 'active' : ''}`}
                     onClick={() => setMintStableType('DGX')}
                   >
-                    <span>DGX (USD Stablecoin)</span>
-                    <span className="mode-tag-pill live">$1.00</span>
+                    <div className="asset-pill-left">
+                      <span className="asset-pill-symbol">DGX</span>
+                      <span className="asset-pill-sub">USD Stablecoin</span>
+                    </div>
+                    <span className="asset-pill-rate">$1.00</span>
                   </button>
                   <button 
                     type="button" 
                     className={`asset-tab-pill ${mintStableType === 'DGZ' ? 'active' : ''}`}
                     onClick={() => setMintStableType('DGZ')}
                   >
-                    <span>DGZ (JPY Stablecoin)</span>
-                    <span className="mode-tag-pill live">¥{fxRate}</span>
+                    <div className="asset-pill-left">
+                      <span className="asset-pill-symbol">DGZ</span>
+                      <span className="asset-pill-sub">JPY Stablecoin</span>
+                    </div>
+                    <span className="asset-pill-rate">¥{fxRate}</span>
                   </button>
                 </div>
 
@@ -2990,16 +2996,22 @@ export default function App() {
                     className={`asset-tab-pill ${mintSynthType === 'eagle' ? 'active' : ''}`}
                     onClick={() => setMintSynthType('eagle')}
                   >
-                    <span>Drago Eagle (Gold)</span>
-                    <span className="mode-tag-pill testnet">$2,680/oz</span>
+                    <div className="asset-pill-left">
+                      <span className="asset-pill-symbol">Drago Eagle</span>
+                      <span className="asset-pill-sub">Gold RWA</span>
+                    </div>
+                    <span className="asset-pill-rate rate-gold">$2,680/oz</span>
                   </button>
                   <button 
                     type="button" 
                     className={`asset-tab-pill ${mintSynthType === 'fly' ? 'active' : ''}`}
                     onClick={() => setMintSynthType('fly')}
                   >
-                    <span>Drago Fly (Crude Oil)</span>
-                    <span className="mode-tag-pill testnet">$74.80/bbl</span>
+                    <div className="asset-pill-left">
+                      <span className="asset-pill-symbol">Drago Fly</span>
+                      <span className="asset-pill-sub">Crude Oil</span>
+                    </div>
+                    <span className="asset-pill-rate rate-oil">$74.80/bbl</span>
                   </button>
                 </div>
 
@@ -3272,20 +3284,38 @@ export default function App() {
           </div>
 
           {/* 4. OMNICHAIN & SMART CONTRACT ARCHITECTURE BANNER */}
-          <div className="hero-stats-strip" style={{ marginTop: 20 }}>
-            <div className="hero-stat-unit">
-              <span className="hero-stat-number text-gradient-crimson">10</span>
-              <span className="hero-stat-desc">Audited Smart Contracts</span>
+          <div className="protocol-trust-banner">
+            <div className="trust-card">
+              <div className="trust-card-icon-bubble trust-icon-crimson">
+                <Shield size={22} />
+              </div>
+              <div className="trust-card-content">
+                <div className="trust-card-num text-gradient-crimson">10</div>
+                <div className="trust-card-title">Audited Smart Contracts</div>
+                <div className="trust-card-sub">Formally Verified Architecture</div>
+              </div>
             </div>
-            <div className="stat-divider" />
-            <div className="hero-stat-unit">
-              <span className="hero-stat-number text-gradient">8+</span>
-              <span className="hero-stat-desc">Supported EVM Chains</span>
+
+            <div className="trust-card">
+              <div className="trust-card-icon-bubble trust-icon-indigo">
+                <Layers size={22} />
+              </div>
+              <div className="trust-card-content">
+                <div className="trust-card-num text-gradient">8+</div>
+                <div className="trust-card-title">Supported EVM Chains</div>
+                <div className="trust-card-sub">Cross-Chain Interoperable</div>
+              </div>
             </div>
-            <div className="stat-divider" />
-            <div className="hero-stat-unit">
-              <span className="hero-stat-number text-gradient-gold">Zero</span>
-              <span className="hero-stat-desc">Counterparty Default Risk</span>
+
+            <div className="trust-card">
+              <div className="trust-card-icon-bubble trust-icon-gold">
+                <Lock size={22} />
+              </div>
+              <div className="trust-card-content">
+                <div className="trust-card-num text-gradient-gold">Zero</div>
+                <div className="trust-card-title">Counterparty Default Risk</div>
+                <div className="trust-card-sub">100% Escrow Collateralized</div>
+              </div>
             </div>
           </div>
         </section>

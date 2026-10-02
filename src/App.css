@@ -1842,6 +1842,11 @@
     grid-template-columns: 1fr;
   }
 
+  .protocol-trust-banner {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
   .roadmap-steps-track {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
@@ -2067,26 +2072,90 @@
   }
 
   .hero-stats-strip {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     width: 100%;
+    padding: 10px 4px;
+    gap: 0;
   }
 
   .hero-stat-unit {
-    padding: 14px 16px;
-    border-right: none;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    padding: 8px 6px;
+    border-right: 1px solid rgba(226, 232, 240, 0.8);
+    border-bottom: none;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
   }
 
   .hero-stat-unit:last-child {
+    border-right: none;
     border-bottom: none;
   }
 
   .hero-stat-number {
-    font-size: 1.8rem;
+    font-size: 1.25rem;
+    line-height: 1.15;
   }
 
   .hero-stat-desc {
-    font-size: 0.76rem;
+    font-size: 0.68rem;
+    line-height: 1.2;
+    margin-top: 3px;
+    text-align: center;
+  }
+
+  .asset-selector-strip {
+    padding: 4px;
+    gap: 5px;
+  }
+
+  .asset-tab-pill {
+    padding: 8px 8px;
+    gap: 4px;
+  }
+
+  .asset-pill-symbol {
+    font-size: 0.82rem;
+  }
+
+  .asset-pill-sub {
+    font-size: 0.65rem;
+  }
+
+  .asset-pill-rate {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+  }
+
+  .protocol-trust-banner {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .trust-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .trust-card-icon-bubble {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 12px;
+  }
+
+  .trust-card-num {
+    font-size: 1.5rem;
+  }
+
+  .trust-card-title {
+    font-size: 0.82rem;
+  }
+
+  .trust-card-sub {
+    font-size: 0.68rem;
   }
 
   .hero-cta-group {
@@ -3899,34 +3968,192 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: rgba(123, 17, 19, 0.04);
-  padding: 5px;
-  border-radius: 12px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
   margin-bottom: 22px;
-  gap: 6px;
+  gap: 8px;
 }
 
 .asset-tab-pill {
   padding: 10px 14px;
-  border-radius: 9px;
-  font-size: 0.88rem;
-  font-weight: 600;
-  border: none;
+  border-radius: 10px;
+  border: 1px solid transparent;
   background: transparent;
-  color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 8px;
-  transition: all 0.2s ease;
+  min-width: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+}
+
+.asset-tab-pill:hover {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .asset-tab-pill.active {
   background: #FFFFFF;
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 4px 14px rgba(123, 17, 19, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.asset-pill-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.asset-pill-symbol {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.2;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.asset-tab-pill.active .asset-pill-symbol {
   color: var(--color-crimson);
-  box-shadow: 0 2px 8px rgba(123, 17, 19, 0.12);
-  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.asset-pill-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.asset-pill-rate {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(16, 185, 129, 0.08);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.asset-pill-rate.rate-gold {
+  background: rgba(212, 175, 55, 0.1);
+  color: #B45309;
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+.asset-pill-rate.rate-oil {
+  background: rgba(79, 70, 229, 0.08);
+  color: #4F46E5;
+  border-color: rgba(79, 70, 229, 0.2);
+}
+
+/* Protocol Architecture & Trust Banner */
+.protocol-trust-banner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 28px;
+  width: 100%;
+}
+
+.trust-card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.trust-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.trust-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(123, 17, 19, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.trust-card:hover::before {
+  opacity: 1;
+}
+
+.trust-card-icon-bubble {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-icon-crimson {
+  background: rgba(123, 17, 19, 0.08);
+  color: var(--color-crimson);
+  border: 1px solid rgba(123, 17, 19, 0.15);
+}
+
+.trust-icon-indigo {
+  background: rgba(79, 70, 229, 0.08);
+  color: #4F46E5;
+  border: 1px solid rgba(79, 70, 229, 0.15);
+}
+
+.trust-icon-gold {
+  background: rgba(212, 175, 55, 0.12);
+  color: #B45309;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.trust-card-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.trust-card-num {
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.trust-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-top: 4px;
+  line-height: 1.25;
+}
+
+.trust-card-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 2px;
 }
 
 /* Gas & Collateral Specs Box */

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import html2canvas from 'html2canvas';
 import { 
   Globe2, 
   CheckCircle2, 
@@ -27,6 +28,7 @@ import {
   Download,
   Bell,
   ArrowUpRight,
+  ArrowRight,
   Wallet,
   Info,
   RotateCcw,
@@ -137,6 +139,8 @@ export default function App() {
   const [voucherModalOpen, setVoucherModalOpen] = useState(false);
   const [activeVoucher, setActiveVoucher] = useState(null);
   const [voucherCopied, setVoucherCopied] = useState(false);
+  const [isExportingVoucher, setIsExportingVoucher] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState('');
 
   // RFQ Modal State
   const [rfqModalOpen, setRfqModalOpen] = useState(false);
@@ -872,6 +876,48 @@ export default function App() {
     showToast('Audit Hash Copied', 'Cryptographic escrow audit hash copied to clipboard.', 'info');
   };
 
+  const handleCopyAddress = (addr, label = 'Contract address') => {
+    if (!addr) return;
+    navigator.clipboard.writeText(addr);
+    setCopiedAddress(addr);
+    setTimeout(() => setCopiedAddress(''), 2000);
+    showToast('Address Copied', `${label} copied to clipboard.`, 'info');
+  };
+
+  const handleExportVoucherPng = async () => {
+    const voucherElement = document.getElementById('official-voucher-certificate');
+    if (!voucherElement) return;
+    try {
+      setIsExportingVoucher(true);
+      showToast('Preparing Export', 'Rendering high-resolution official voucher PNG...', 'info');
+
+      const canvas = await html2canvas(voucherElement, {
+        scale: 2,
+        backgroundColor: '#FFFFFF',
+        useCORS: true,
+        logging: false,
+      });
+
+      const image = canvas.toDataURL('image/png', 1.0);
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `DragoX-Voucher-${activeVoucher?.poNumber || 'Settlement'}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Export Complete', 'Official Voucher saved as high-resolution PNG image.', 'success');
+    } catch (err) {
+      console.error('Error generating voucher PNG:', err);
+      showToast('Export Notice', 'Please use the Download PDF / Print option to save voucher directly.', 'info');
+    } finally {
+      setIsExportingVoucher(false);
+    }
+  };
+
+  const handleExportVoucherPdf = () => {
+    window.print();
+  };
+
   // Handle Real Smart Escrow & Commercial Supplier Payment
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
@@ -1547,18 +1593,14 @@ export default function App() {
               aria-pressed={workspaceMode === 'trade'}
               id="workspace-mode-trade-btn"
             >
-              <div className="workspace-mode-tab-content">
-                <div className="workspace-mode-icon-circle">
-                  <Building2 size={18} />
-                </div>
-                <div className="workspace-mode-info">
-                  <div className="workspace-mode-header-line">
-                    <span className="workspace-mode-name">B2B Trade Portal</span>
-                    <span className="workspace-mode-pill live">Live Corridor</span>
-                  </div>
-                  <span className="workspace-mode-caption">Commercial Escrow & Instant Settlement OS</span>
-                </div>
-              </div>
+              <span className="mode-tab-icon">
+                <Building2 size={16} />
+              </span>
+              <span className="mode-tab-label">B2B Trade Portal</span>
+              <span className="mode-tab-badge live">
+                <span className="mode-badge-dot live" />
+                <span>Live</span>
+              </span>
             </button>
 
             <button
@@ -1571,18 +1613,14 @@ export default function App() {
               aria-pressed={workspaceMode === 'protocol'}
               id="workspace-mode-protocol-btn"
             >
-              <div className="workspace-mode-tab-content">
-                <div className="workspace-mode-icon-circle">
-                  <Cpu size={18} />
-                </div>
-                <div className="workspace-mode-info">
-                  <div className="workspace-mode-header-line">
-                    <span className="workspace-mode-name">Protocol & AI Hub</span>
-                    <span className="workspace-mode-pill testnet">Sepolia Web3 MVP</span>
-                  </div>
-                  <span className="workspace-mode-caption">Real Smart Contracts, RWA & AI Oracle</span>
-                </div>
-              </div>
+              <span className="mode-tab-icon">
+                <Cpu size={16} />
+              </span>
+              <span className="mode-tab-label">Protocol & AI Hub</span>
+              <span className="mode-tab-badge testnet">
+                <span className="mode-badge-dot gold" />
+                <span>Sepolia MVP</span>
+              </span>
             </button>
           </div>
         </div>
@@ -2700,16 +2738,28 @@ export default function App() {
                 </div>
                 <div className="contract-name">DGX Token (1:1 USD)</div>
                 <div className="contract-address-row">
-                  <code className="contract-code">{deployedContracts.contracts.DGXToken}</code>
-                  <a 
-                    href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGXToken}`} 
-                    target="_blank" 
-                    rel="noreferrer" 
-                    className="contract-link" 
-                    title="View on Sepolia Etherscan"
-                  >
-                    <ExternalLink size={13} />
-                  </a>
+                  <span className="contract-code" title={deployedContracts.contracts.DGXToken}>
+                    {deployedContracts.contracts.DGXToken}
+                  </span>
+                  <div className="contract-actions-inline">
+                    <button 
+                      type="button" 
+                      className="btn-icon-copy" 
+                      onClick={() => handleCopyAddress(deployedContracts.contracts.DGXToken, 'DGX contract address')}
+                      title="Copy Address"
+                    >
+                      {copiedAddress === deployedContracts.contracts.DGXToken ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
+                    </button>
+                    <a 
+                      href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGXToken}`} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="contract-link" 
+                      title="View on Sepolia Etherscan"
+                    >
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -2728,16 +2778,28 @@ export default function App() {
                 </div>
                 <div className="contract-name">DGZ Token (1:1 JPY)</div>
                 <div className="contract-address-row">
-                  <code className="contract-code">{deployedContracts.contracts.DGZToken}</code>
-                  <a 
-                    href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGZToken}`} 
-                    target="_blank" 
-                    rel="noreferrer" 
-                    className="contract-link" 
-                    title="View on Sepolia Etherscan"
-                  >
-                    <ExternalLink size={13} />
-                  </a>
+                  <span className="contract-code" title={deployedContracts.contracts.DGZToken}>
+                    {deployedContracts.contracts.DGZToken}
+                  </span>
+                  <div className="contract-actions-inline">
+                    <button 
+                      type="button" 
+                      className="btn-icon-copy" 
+                      onClick={() => handleCopyAddress(deployedContracts.contracts.DGZToken, 'DGZ contract address')}
+                      title="Copy Address"
+                    >
+                      {copiedAddress === deployedContracts.contracts.DGZToken ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
+                    </button>
+                    <a 
+                      href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGZToken}`} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="contract-link" 
+                      title="View on Sepolia Etherscan"
+                    >
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -2748,16 +2810,28 @@ export default function App() {
                 </div>
                 <div className="contract-name">Drago Escrow Vault</div>
                 <div className="contract-address-row">
-                  <code className="contract-code">{deployedContracts.contracts.DragoEscrow}</code>
-                  <a 
-                    href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DragoEscrow}`} 
-                    target="_blank" 
-                    rel="noreferrer" 
-                    className="contract-link" 
-                    title="View on Sepolia Etherscan"
-                  >
-                    <ExternalLink size={13} />
-                  </a>
+                  <span className="contract-code" title={deployedContracts.contracts.DragoEscrow}>
+                    {deployedContracts.contracts.DragoEscrow}
+                  </span>
+                  <div className="contract-actions-inline">
+                    <button 
+                      type="button" 
+                      className="btn-icon-copy" 
+                      onClick={() => handleCopyAddress(deployedContracts.contracts.DragoEscrow, 'DragoEscrow contract address')}
+                      title="Copy Address"
+                    >
+                      {copiedAddress === deployedContracts.contracts.DragoEscrow ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
+                    </button>
+                    <a 
+                      href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DragoEscrow}`} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="contract-link" 
+                      title="View on Sepolia Etherscan"
+                    >
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3538,16 +3612,14 @@ export default function App() {
       {/* OFFICIAL COMMERCIAL PAYMENT VOUCHER MODAL */}
       {voucherModalOpen && activeVoucher && (
         <div className="modal-backdrop-wrap" onClick={() => setVoucherModalOpen(false)}>
-          <div className="modal-inner-card voucher-modal-card" onClick={e => e.stopPropagation()}>
-            <div className="voucher-watermark-seal">DRAGO X</div>
-
+          <div className="modal-inner-card voucher-modal-card" id="official-voucher-certificate" onClick={e => e.stopPropagation()}>
             <div className="voucher-top-bar">
               <div className="voucher-brand-group">
-                <div className="brand-icon-box" style={{ width: 40, height: 40 }}>
+                <div className="brand-icon-box" style={{ width: 44, height: 44, minWidth: 44 }}>
                   <img src="/drago_logo.png" alt="DRAGO X Logo" className="brand-icon-img" />
                 </div>
-                <div>
-                  <div className="voucher-protocol-title">DRAGO X PROTOCOL</div>
+                <div className="voucher-title-texts">
+                  <div className="voucher-protocol-title">DRAGO X COMMERCIAL PROTOCOL</div>
                   <div className="voucher-protocol-sub">Cross-Border Settlement & Digital Escrow Voucher</div>
                 </div>
               </div>
@@ -3582,7 +3654,9 @@ export default function App() {
                 <span className="v-funds-lbl">Disbursed (Escrow)</span>
                 <div className="v-funds-num">${activeVoucher.amountSentUsd} USD</div>
               </div>
-              <div className="v-arrow">➔</div>
+              <div className="v-arrow-disc">
+                <ArrowRight size={18} />
+              </div>
               <div className="v-funds-col">
                 <span className="v-funds-lbl">Supplier Credited (Tokyo Interbank)</span>
                 <div className="v-funds-num jpy">¥{activeVoucher.amountReceivedJpy} JPY</div>
@@ -3610,8 +3684,18 @@ export default function App() {
 
             <div className="voucher-hash-box">
               <div className="hash-header">
-                <Shield size={13} />
-                <span>On-Chain Cryptographic Escrow Audit Hash</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Shield size={13} color="var(--color-crimson)" />
+                  <span>On-Chain Cryptographic Escrow Audit Hash</span>
+                </div>
+                <button
+                  type="button"
+                  className="btn-icon-copy"
+                  onClick={() => handleCopyVoucherHash(activeVoucher.txHash)}
+                  title="Copy Audit Hash"
+                >
+                  {voucherCopied ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
+                </button>
               </div>
               <code className="hash-text">{activeVoucher.txHash}</code>
               {activeVoucher.txHash && activeVoucher.txHash.startsWith('0x') && (
@@ -3705,7 +3789,7 @@ export default function App() {
               )}
             </div>
 
-            <div className="modal-actions-row" style={{ marginTop: 22 }}>
+            <div className="modal-actions-row voucher-actions-row" style={{ marginTop: 22 }}>
               <button 
                 type="button" 
                 className="btn-minimal" 
@@ -3715,11 +3799,22 @@ export default function App() {
               </button>
               <button 
                 type="button" 
-                className="btn-colorful btn-print-modal"
-                onClick={() => window.print()}
+                className="btn-minimal"
+                onClick={handleExportVoucherPng}
+                disabled={isExportingVoucher}
+                title="Download voucher as PNG image"
               >
-                <Printer size={16} />
-                <span>Print Official Voucher</span>
+                {isExportingVoucher ? <RefreshCw size={15} className="animate-spin" /> : <Download size={15} />}
+                <span>{isExportingVoucher ? 'Generating PNG...' : 'Download PNG'}</span>
+              </button>
+              <button 
+                type="button" 
+                className="btn-colorful btn-print-modal"
+                onClick={handleExportVoucherPdf}
+                title="Save as PDF or print voucher"
+              >
+                <Printer size={15} />
+                <span>Download PDF / Print</span>
               </button>
             </div>
           </div>

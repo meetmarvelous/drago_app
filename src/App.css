@@ -63,12 +63,17 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  padding: 12px 28px;
-  background: rgba(255, 255, 255, 0.94);
+  padding: 0 24px;
+  height: 66px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .navbar-container {
@@ -76,9 +81,10 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1360px;
+  max-width: 1280px;
   margin: 0 auto;
   gap: 16px;
+  box-sizing: border-box;
 }
 
 .nav-brand {
@@ -90,9 +96,9 @@
 }
 
 .brand-icon-box {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
   background: var(--grad-crimson);
   border: 1px solid rgba(212, 175, 55, 0.4);
   display: flex;
@@ -122,7 +128,7 @@
 }
 
 .brand-title {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--color-crimson);
@@ -144,13 +150,14 @@
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
+  flex-shrink: 0;
 }
 
 .nav-link-item {
   color: var(--text-muted);
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   text-decoration: none;
   position: relative;
   padding: 6px 0;
@@ -176,49 +183,6 @@
   height: 2px;
   background: var(--grad-hero);
   border-radius: 2px;
-}
-
-.nav-mode-link-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 12px;
-  background: rgba(123, 17, 19, 0.05);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 9px;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--color-crimson);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-left: 6px;
-  text-decoration: none;
-}
-
-.nav-mode-link-btn:hover {
-  background: rgba(123, 17, 19, 0.1);
-  border-color: var(--color-crimson);
-  color: var(--color-crimson);
-  transform: translateY(-1px);
-}
-
-.nav-mode-badge {
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 1px 6px;
-  border-radius: 5px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.nav-mode-badge.live {
-  background: rgba(16, 185, 129, 0.16);
-  color: #065F46;
-}
-
-.nav-mode-badge.testnet {
-  background: rgba(212, 175, 55, 0.22);
-  color: #92400E;
 }
 
 .nav-actions {
@@ -1674,8 +1638,17 @@
    COMPREHENSIVE RESPONSIVE DESIGN SYSTEM (Desktop, Tablet, Mobile)
    ========================================================= */
 
-/* Desktop Refinements (1025px - 1280px) */
+/* Desktop Refinements (1081px - 1280px) */
 @media (max-width: 1280px) {
+  .nav-status-pill {
+    display: none;
+  }
+  .nav-links {
+    gap: 16px;
+  }
+  .nav-link-item {
+    font-size: 0.85rem;
+  }
   .hero-section, .demo-section, .tokens-section, .architecture-section {
     padding: 50px 30px;
   }
@@ -1687,10 +1660,10 @@
   }
 }
 
-/* Tablet & iPad Breakpoint (769px - 1024px) */
-@media (max-width: 1024px) {
+/* Tablet & iPad Breakpoint (769px - 1080px) */
+@media (max-width: 1080px) {
   .navbar {
-    padding: 0 20px;
+    padding: 0 18px;
     height: 64px;
   }
   
@@ -1707,7 +1680,7 @@
   }
 
   .workspace-mode-bar {
-    padding: 10px 20px;
+    padding: 10px 18px;
   }
 
   .hero-grid {

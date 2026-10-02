@@ -1241,19 +1241,6 @@ export default function App() {
                 <a href="#payment" className="nav-link-item">Pay Supplier</a>
                 <a href="#catalog" className="nav-link-item">Catalog</a>
                 <a href="#how-it-works" className="nav-link-item">How It Works</a>
-                <button 
-                  type="button" 
-                  className="nav-link-item nav-mode-link-btn"
-                  onClick={() => {
-                    setWorkspaceMode('protocol');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  title="Switch to Web3 Protocol & Sepolia Smart Contracts"
-                >
-                  <Cpu size={14} />
-                  <span>Web3 Protocol</span>
-                  <span className="nav-mode-badge testnet">MVP</span>
-                </button>
               </>
             ) : (
               <>
@@ -1262,19 +1249,6 @@ export default function App() {
                 <button type="button" className={`nav-link-item ${protocolStep === 3 ? 'active' : ''}`} onClick={() => setProtocolStep(3)}>3. Synthetics</button>
                 <button type="button" className={`nav-link-item ${protocolStep === 4 ? 'active' : ''}`} onClick={() => setProtocolStep(4)}>4. AI Oracle</button>
                 <button type="button" className={`nav-link-item ${protocolStep === 5 ? 'active' : ''}`} onClick={() => setProtocolStep(5)}>5. Staking</button>
-                <button 
-                  type="button" 
-                  className="nav-link-item nav-mode-link-btn"
-                  onClick={() => {
-                    setWorkspaceMode('trade');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  title="Switch to B2B Commercial Trade Portal"
-                >
-                  <Building2 size={14} />
-                  <span>Trade Portal</span>
-                  <span className="nav-mode-badge live">Live</span>
-                </button>
               </>
             )}
           </nav>
@@ -1296,7 +1270,7 @@ export default function App() {
                 title="Corridor live trade updates"
                 aria-label="View notifications"
               >
-                <Bell size={17} />
+                <Bell size={16} />
                 <span className="bell-badge-dot" />
               </button>
 
@@ -1340,10 +1314,10 @@ export default function App() {
                   type="button" 
                   className="btn-minimal nav-topup-btn"
                   onClick={() => setTopUpModalOpen(true)}
-                  title="Add funds to commercial escrow balance"
+                  title={`Add funds to commercial escrow balance ($${(availableBalance || 0).toLocaleString()} available)`}
                 >
-                  <Wallet size={15} color="var(--color-gold-deep)" />
-                  <span>Top Up (${(availableBalance || 0).toLocaleString()})</span>
+                  <Wallet size={14} color="var(--color-gold-deep)" />
+                  <span>Top Up</span>
                 </button>
 
                 <a 
@@ -1351,7 +1325,7 @@ export default function App() {
                   className="btn-colorful nav-action-btn"
                 >
                   <span>Pay Supplier</span>
-                  <ChevronRight size={15} />
+                  <ChevronRight size={14} />
                 </a>
               </>
             ) : (
@@ -1368,8 +1342,8 @@ export default function App() {
                   onClick={handleConnectWallet}
                   disabled={isConnectingWallet}
                 >
-                  <Wallet size={15} />
-                  <span>{isConnectingWallet ? 'Connecting...' : 'Connect Sepolia'}</span>
+                  <Wallet size={14} />
+                  <span>{isConnectingWallet ? 'Connecting...' : 'Connect'}</span>
                 </button>
               )
             )}

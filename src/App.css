@@ -4058,7 +4058,7 @@
 /* Protocol Architecture & Trust Banner */
 .protocol-trust-banner {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 16px;
   margin-top: 28px;
   width: 100%;
@@ -4068,7 +4068,7 @@
   background: #FFFFFF;
   border-radius: 18px;
   border: 1px solid rgba(226, 232, 240, 0.9);
-  padding: 22px 24px;
+  padding: 20px 22px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -4076,6 +4076,7 @@
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .trust-card::before {
@@ -4132,6 +4133,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  flex: 1;
 }
 
 .trust-card-num {
@@ -4142,11 +4144,13 @@
 }
 
 .trust-card-title {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text-dark);
   margin-top: 4px;
   line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
 }
 
 .trust-card-sub {
@@ -4154,6 +4158,8 @@
   color: var(--text-muted);
   font-weight: 500;
   margin-top: 2px;
+  white-space: normal;
+  word-break: normal;
 }
 
 /* Gas & Collateral Specs Box */
@@ -4505,11 +4511,42 @@
     width: 100%;
     justify-content: space-between;
   }
+  .protocol-trust-banner {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .trust-card {
+    padding: 16px 18px;
+    gap: 14px;
+  }
 }
 
 @media (max-width: 600px) {
   .roadmap-steps-track {
     grid-template-columns: 1fr;
+  }
+  .protocol-trust-banner {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-top: 18px;
+  }
+  .trust-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .trust-card-icon-bubble {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+  }
+  .trust-card-num {
+    font-size: 1.55rem;
+  }
+  .trust-card-title {
+    font-size: 0.85rem;
+  }
+  .trust-card-sub {
+    font-size: 0.7rem;
   }
 }
 

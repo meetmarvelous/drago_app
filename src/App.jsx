@@ -3663,210 +3663,229 @@ export default function App() {
       {/* OFFICIAL COMMERCIAL PAYMENT VOUCHER MODAL */}
       {voucherModalOpen && activeVoucher && (
         <div className="modal-backdrop-wrap" onClick={() => setVoucherModalOpen(false)}>
-          <div className="modal-inner-card voucher-modal-card" id="official-voucher-certificate" onClick={e => e.stopPropagation()}>
-            <div className="voucher-top-bar">
-              <div className="voucher-brand-group">
-                <div className="brand-icon-box" style={{ width: 44, height: 44, minWidth: 44 }}>
-                  <img src="/drago_logo.png" alt="DRAGO X Logo" className="brand-icon-img" />
-                </div>
-                <div className="voucher-title-texts">
-                  <div className="voucher-protocol-title">DRAGO X COMMERCIAL PROTOCOL</div>
-                  <div className="voucher-protocol-sub">Cross-Border Settlement & Digital Escrow Voucher</div>
-                </div>
-              </div>
+          <div className="modal-inner-card voucher-modal-card" onClick={e => e.stopPropagation()}>
+            {/* Top Dismiss Button */}
+            <button 
+              type="button" 
+              className="voucher-close-x-btn"
+              onClick={() => setVoucherModalOpen(false)}
+              title="Close Voucher"
+              aria-label="Close"
+            >
+              <X size={17} />
+            </button>
 
-              <div className="voucher-status-badge">
-                <CheckCircle2 size={16} />
-                <span>CLEARED & SETTLED</span>
-              </div>
-            </div>
-
-            <div className="voucher-fields-grid">
-              <div className="voucher-field-unit">
-                <span className="v-lbl">Purchase Order No.</span>
-                <strong className="v-val mono">{activeVoucher.poNumber}</strong>
-              </div>
-              <div className="voucher-field-unit">
-                <span className="v-lbl">Settlement Timestamp</span>
-                <strong className="v-val">{activeVoucher.date || 'Today'} • {activeVoucher.time}</strong>
-              </div>
-              <div className="voucher-field-unit">
-                <span className="v-lbl">Buyer / Importer Desk</span>
-                <strong className="v-val">East Africa Machinery Imports Ltd (Nairobi)</strong>
-              </div>
-              <div className="voucher-field-unit">
-                <span className="v-lbl">Japanese Exporter Desk</span>
-                <strong className="v-val">{activeVoucher.supplier}</strong>
-              </div>
-            </div>
-
-            <div className="voucher-funds-highlight">
-              <div className="v-funds-col">
-                <span className="v-funds-lbl">Disbursed (Escrow)</span>
-                <div className="v-funds-num">${activeVoucher.amountSentUsd} USD</div>
-              </div>
-              <div className="v-arrow-disc">
-                <ArrowRight size={18} />
-              </div>
-              <div className="v-funds-col">
-                <span className="v-funds-lbl">Supplier Credited (Tokyo Interbank)</span>
-                <div className="v-funds-num jpy">¥{activeVoucher.amountReceivedJpy} JPY</div>
-              </div>
-            </div>
-
-            <div className="voucher-specs-strip">
-              <div>
-                <span className="v-spec-lbl">Fixed Corridor FX:</span>
-                <strong className="v-spec-val">1 USD = {activeVoucher.rate} JPY</strong>
-              </div>
-              <div>
-                <span className="v-spec-lbl">Wire Markup Saved:</span>
-                <strong className="v-spec-val gold">+${activeVoucher.savingsUsd} USD</strong>
-              </div>
-              <div>
-                <span className="v-spec-lbl">Settlement Rail:</span>
-                <strong className="v-spec-val">Ethereum Sepolia (DragoEscrow.sol)</strong>
-              </div>
-              <div>
-                <span className="v-spec-lbl">Tokyo Clearing Code:</span>
-                <strong className="v-spec-val">TYO-BOJ-NET-882</strong>
-              </div>
-            </div>
-
-            <div className="voucher-hash-box">
-              <div className="hash-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Shield size={13} color="var(--color-crimson)" />
-                  <span>On-Chain Cryptographic Escrow Audit Hash</span>
-                </div>
-                <button
-                  type="button"
-                  className="btn-icon-copy"
-                  onClick={() => handleCopyVoucherHash(activeVoucher.txHash)}
-                  title="Copy Audit Hash"
-                >
-                  {voucherCopied ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
-                </button>
-              </div>
-              <code className="hash-text">{activeVoucher.txHash}</code>
-              {activeVoucher.txHash && activeVoucher.txHash.startsWith('0x') && (
-                <div style={{ marginTop: 8 }}>
-                  <a
-                    href={`https://sepolia.etherscan.io/tx/${activeVoucher.txHash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      color: 'var(--color-crimson)',
-                      fontSize: '0.8rem',
-                      fontWeight: 700,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    <span>Verify Transaction on Sepolia Etherscan</span>
-                    <ExternalLink size={13} />
-                  </a>
-                </div>
-              )}
-            </div>
-
-            {/* Cloudflare R2 Trade Document Upload */}
-            <div style={{
-              marginTop: 16,
-              padding: '14px 16px',
-              borderRadius: '10px',
-              background: '#F8FAFC',
-              border: '1px dashed #CBD5E1',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 6 }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dark)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <FileCheck2 size={15} color="var(--color-crimson)" />
-                  <span>Trade Document (JAAI Inspection / Bill of Lading)</span>
-                </span>
-                <span style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 600 }}>Cloudflare R2 Storage</span>
-              </div>
-
-              {uploadedDocUrl ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FFFFFF', padding: '8px 12px', borderRadius: '6px', border: '1px solid #E2E8F0', flexWrap: 'wrap', gap: 6 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.82rem', fontWeight: 600, color: 'var(--color-crimson)' }}>
-                    <CheckCircle2 size={14} color="#10B981" />
-                    <span>{uploadedDocName || 'JAAI-Inspection-Certificate.pdf'}</span>
+            {/* Scrollable Certificate Area (Captured cleanly by html2canvas) */}
+            <div className="voucher-certificate-scroll-area">
+              <div id="official-voucher-certificate" className="voucher-certificate-body">
+                <div className="voucher-top-bar">
+                  <div className="voucher-brand-header">
+                    <div className="brand-icon-box voucher-logo-box">
+                      <img src="/drago_logo.png" alt="DRAGO X Logo" className="brand-icon-img" />
+                    </div>
+                    <div className="voucher-header-info">
+                      <div className="voucher-protocol-title">DRAGO X PROTOCOL</div>
+                      <div className="voucher-protocol-sub">Cross-Border Settlement & Digital Escrow Voucher</div>
+                    </div>
                   </div>
-                  <a
-                    href={uploadedDocUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ fontSize: '0.76rem', color: 'var(--color-crimson)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
-                  >
-                    <span>View Stored Document</span>
-                    <ExternalLink size={11} />
-                  </a>
+
+                  <div className="voucher-status-badge">
+                    <CheckCircle2 size={14} />
+                    <span>CLEARED & SETTLED</span>
+                  </div>
                 </div>
-              ) : (
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  border: '1px solid #CBD5E1',
-                  background: '#FFFFFF',
-                  cursor: isUploadingDoc ? 'not-allowed' : 'pointer',
-                  fontSize: '0.8rem',
-                  color: 'var(--text-body)',
-                }}>
-                  <input
-                    type="file"
-                    style={{ display: 'none' }}
-                    accept=".pdf,.png,.jpg,.jpeg"
-                    onChange={handleFileUpload}
-                    disabled={isUploadingDoc}
-                  />
-                  {isUploadingDoc ? (
-                    <>
-                      <RefreshCw size={14} className="animate-spin" />
-                      <span>Uploading to Cloudflare R2...</span>
-                    </>
-                  ) : (
-                    <>
-                      <UploadCloud size={15} color="var(--color-crimson)" />
-                      <span>Attach JAAI Inspection Certificate or Bill of Lading (Cloudflare R2)</span>
-                    </>
+
+                <div className="voucher-fields-grid">
+                  <div className="voucher-field-unit">
+                    <span className="v-lbl">Purchase Order No.</span>
+                    <strong className="v-val mono">{activeVoucher.poNumber}</strong>
+                  </div>
+                  <div className="voucher-field-unit">
+                    <span className="v-lbl">Settlement Timestamp</span>
+                    <strong className="v-val">{activeVoucher.date || 'Today'} • {activeVoucher.time}</strong>
+                  </div>
+                  <div className="voucher-field-unit">
+                    <span className="v-lbl">Buyer / Importer Desk</span>
+                    <strong className="v-val">East Africa Machinery Imports Ltd (Nairobi)</strong>
+                  </div>
+                  <div className="voucher-field-unit">
+                    <span className="v-lbl">Japanese Exporter Desk</span>
+                    <strong className="v-val">{activeVoucher.supplier}</strong>
+                  </div>
+                </div>
+
+                <div className="voucher-funds-highlight">
+                  <div className="v-funds-col">
+                    <span className="v-funds-lbl">Disbursed (Escrow)</span>
+                    <div className="v-funds-num">${activeVoucher.amountSentUsd} USD</div>
+                  </div>
+                  <div className="v-arrow-disc">
+                    <ArrowRight size={18} />
+                  </div>
+                  <div className="v-funds-col">
+                    <span className="v-funds-lbl">Supplier Credited (Tokyo Interbank)</span>
+                    <div className="v-funds-num jpy">¥{activeVoucher.amountReceivedJpy} JPY</div>
+                  </div>
+                </div>
+
+                <div className="voucher-specs-strip">
+                  <div>
+                    <span className="v-spec-lbl">Fixed Corridor FX:</span>
+                    <strong className="v-spec-val">1 USD = {activeVoucher.rate} JPY</strong>
+                  </div>
+                  <div>
+                    <span className="v-spec-lbl">Wire Markup Saved:</span>
+                    <strong className="v-spec-val gold">+${activeVoucher.savingsUsd} USD</strong>
+                  </div>
+                  <div>
+                    <span className="v-spec-lbl">Settlement Rail:</span>
+                    <strong className="v-spec-val">Ethereum Sepolia (DragoEscrow.sol)</strong>
+                  </div>
+                  <div>
+                    <span className="v-spec-lbl">Tokyo Clearing Code:</span>
+                    <strong className="v-spec-val">TYO-BOJ-NET-882</strong>
+                  </div>
+                </div>
+
+                <div className="voucher-hash-box">
+                  <div className="hash-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <Shield size={13} color="var(--color-crimson)" />
+                      <span>On-Chain Cryptographic Escrow Audit Hash</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-icon-copy"
+                      onClick={() => handleCopyVoucherHash(activeVoucher.txHash)}
+                      title="Copy Audit Hash"
+                    >
+                      {voucherCopied ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
+                    </button>
+                  </div>
+                  <code className="hash-text">{activeVoucher.txHash}</code>
+                  {activeVoucher.txHash && activeVoucher.txHash.startsWith('0x') && (
+                    <div style={{ marginTop: 8 }}>
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${activeVoucher.txHash}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          color: 'var(--color-crimson)',
+                          fontSize: '0.8rem',
+                          fontWeight: 700,
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <span>Verify Transaction on Sepolia Etherscan</span>
+                        <ExternalLink size={13} />
+                      </a>
+                    </div>
                   )}
-                </label>
-              )}
+                </div>
+
+                {/* Cloudflare R2 Trade Document Upload */}
+                <div style={{
+                  marginTop: 14,
+                  padding: '12px 14px',
+                  borderRadius: '10px',
+                  background: '#F8FAFC',
+                  border: '1px dashed #CBD5E1',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6, flexWrap: 'wrap', gap: 6 }}>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-dark)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <FileCheck2 size={14} color="var(--color-crimson)" />
+                      <span>Trade Document (JAAI Inspection / Bill of Lading)</span>
+                    </span>
+                    <span style={{ fontSize: '0.7rem', color: '#10B981', fontWeight: 600 }}>Cloudflare R2 Storage</span>
+                  </div>
+
+                  {uploadedDocUrl ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FFFFFF', padding: '6px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', flexWrap: 'wrap', gap: 6 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-crimson)' }}>
+                        <CheckCircle2 size={13} color="#10B981" />
+                        <span>{uploadedDocName || 'JAAI-Inspection-Certificate.pdf'}</span>
+                      </div>
+                      <a
+                        href={uploadedDocUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ fontSize: '0.74rem', color: 'var(--color-crimson)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+                      >
+                        <span>View Stored Document</span>
+                        <ExternalLink size={11} />
+                      </a>
+                    </div>
+                  ) : (
+                    <label style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
+                      padding: '8px 10px',
+                      borderRadius: '6px',
+                      border: '1px solid #CBD5E1',
+                      background: '#FFFFFF',
+                      cursor: isUploadingDoc ? 'not-allowed' : 'pointer',
+                      fontSize: '0.78rem',
+                      color: 'var(--text-body)',
+                    }}>
+                      <input
+                        type="file"
+                        style={{ display: 'none' }}
+                        accept=".pdf,.png,.jpg,.jpeg"
+                        onChange={handleFileUpload}
+                        disabled={isUploadingDoc}
+                      />
+                      {isUploadingDoc ? (
+                        <>
+                          <RefreshCw size={13} className="animate-spin" />
+                          <span>Uploading to Cloudflare R2...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud size={14} color="var(--color-crimson)" />
+                          <span>Attach JAAI Inspection Certificate or B/L (Cloudflare R2)</span>
+                        </>
+                      )}
+                    </label>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className="modal-actions-row voucher-actions-row" style={{ marginTop: 22 }}>
+            {/* STICKY BOTTOM ACTIONS ROW */}
+            <div className="voucher-actions-sticky-bar">
               <button 
                 type="button" 
-                className="btn-minimal" 
+                className="btn-minimal voucher-btn-dismiss" 
                 onClick={() => setVoucherModalOpen(false)}
               >
                 Close
               </button>
-              <button 
-                type="button" 
-                className="btn-minimal"
-                onClick={handleExportVoucherPng}
-                disabled={isExportingVoucher}
-                title="Download voucher as PNG image"
-              >
-                {isExportingVoucher ? <RefreshCw size={15} className="animate-spin" /> : <Download size={15} />}
-                <span>{isExportingVoucher ? 'Generating PNG...' : 'Download PNG'}</span>
-              </button>
-              <button 
-                type="button" 
-                className="btn-colorful btn-print-modal"
-                onClick={handleExportVoucherPdf}
-                title="Save as PDF or print voucher"
-              >
-                <Printer size={15} />
-                <span>Download PDF / Print</span>
-              </button>
+              <div className="voucher-actions-export-group">
+                <button 
+                  type="button" 
+                  className="btn-minimal voucher-btn-export"
+                  onClick={handleExportVoucherPng}
+                  disabled={isExportingVoucher}
+                  title="Download official voucher as high-res PNG image"
+                >
+                  {isExportingVoucher ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
+                  <span>{isExportingVoucher ? 'Generating...' : 'Download PNG'}</span>
+                </button>
+                <button 
+                  type="button" 
+                  className="btn-colorful voucher-btn-print"
+                  onClick={handleExportVoucherPdf}
+                  title="Save as PDF or print official voucher"
+                >
+                  <Printer size={14} />
+                  <span>Print / Save PDF</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

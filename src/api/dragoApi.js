@@ -87,4 +87,51 @@ export const dragoApi = {
   async getRecentOrders() {
     return request('/trade/orders');
   },
+
+  async updateOrderStatus(orderId, updateData) {
+    return request(`/trade/orders/${orderId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateData),
+    });
+  },
+
+  // 5. Cloudflare R2 Object Storage (Certificates, Photos, Vouchers)
+  async getStorageStatus() {
+    return request('/storage/status');
+  },
+
+  async getPresignedUrl({ filename, contentType, folder = 'documents' }) {
+    return request('/storage/presigned-url', {
+      method: 'POST',
+      body: JSON.stringify({ filename, contentType, folder }),
+    });
+  },
+
+  async uploadFileToR2(file, folder = 'documents') {
+    const presigned = await this.getPresignedUrl({
+      filename: file.name,
+      contentType: file.type || 'application/octet-stream',
+      folder,
+    });
+
+    if (presigned?.data?.uploadUrl) {
+      await fetch(presigned.data.uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': file.type || 'application/octet-stream',
+        },
+      });
+
+      return {
+        success: true,
+        publicUrl: presigned.data.publicUrl,
+        key: presigned.data.key,
+        name: file.name,
+      };
+    }
+
+    throw new Error('Presigned URL generation failed');
+  },
 };
+

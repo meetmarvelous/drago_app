@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { 
   Globe2, 
   CheckCircle2, 
@@ -24,7 +25,6 @@ import {
   ExternalLink,
   Shield,
   PlusCircle,
-  Printer,
   Download,
   Bell,
   ArrowUpRight,
@@ -140,6 +140,7 @@ export default function App() {
   const [activeVoucher, setActiveVoucher] = useState(null);
   const [voucherCopied, setVoucherCopied] = useState(false);
   const [isExportingVoucher, setIsExportingVoucher] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState('');
 
   // RFQ Modal State
@@ -223,6 +224,14 @@ export default function App() {
       savingsUsd: '714.00'
     }
   ]);
+
+  // Auto-dismiss initial Corridor Active alert after 4.5 seconds
+  useEffect(() => {
+    const alertTimer = setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== 1));
+    }, 4500);
+    return () => clearTimeout(alertTimer);
+  }, []);
 
   // Check Backend Connection and Fetch Catalog on Mount
   useEffect(() => {
@@ -914,8 +923,55 @@ export default function App() {
     }
   };
 
-  const handleExportVoucherPdf = () => {
-    window.print();
+  const handleExportVoucherPdf = async () => {
+    const voucherElement = document.getElementById('official-voucher-certificate');
+    if (!voucherElement) return;
+
+    try {
+      setIsExportingPdf(true);
+      showToast('Generating PDF', 'Generating official settlement certificate PDF...', 'info');
+
+      // 1. Capture certificate cleanly with html2canvas at high resolution
+      const canvas = await html2canvas(voucherElement, {
+        scale: 2.5,
+        backgroundColor: '#FFFFFF',
+        useCORS: true,
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL('image/png', 1.0);
+
+      // 2. Generate PDF document using jsPDF formatted to A4
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth(); // 210mm
+      const pageHeight = pdf.internal.pageSize.getHeight(); // 297mm
+
+      const margin = 14; // 14mm margins
+      const printWidth = pageWidth - (margin * 2);
+      const printHeight = (canvas.height * printWidth) / canvas.width;
+
+      // Center vertically if it fits cleanly on one page, else place at top margin
+      const posY = printHeight < (pageHeight - margin * 2) 
+        ? Math.max(margin, (pageHeight - printHeight) / 2) 
+        : margin;
+
+      pdf.addImage(imgData, 'PNG', margin, posY, printWidth, printHeight, undefined, 'FAST');
+
+      const filename = `DragoX-Official-Voucher-${activeVoucher?.poNumber || 'Settlement'}.pdf`;
+      pdf.save(filename);
+
+      showToast('PDF Saved', `Successfully downloaded ${filename}`, 'success');
+    } catch (err) {
+      console.error('Error generating voucher PDF:', err);
+      showToast('Export Notice', 'Unable to generate PDF. Please use Download PNG to export your voucher.', 'error');
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   // Handle Real Smart Escrow & Commercial Supplier Payment
@@ -2244,8 +2300,8 @@ export default function App() {
                         className="btn-print-voucher"
                         onClick={() => handleOpenVoucher(paymentReceipt)}
                       >
-                        <Printer size={15} />
-                        <span>Official Voucher & Print</span>
+                        <FileText size={15} />
+                        <span>Official Voucher</span>
                       </button>
                       <button 
                         type="button" 
@@ -3874,16 +3930,17 @@ export default function App() {
                   title="Download official voucher as high-res PNG image"
                 >
                   {isExportingVoucher ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
-                  <span>{isExportingVoucher ? 'Generating...' : 'Download PNG'}</span>
+                  <span>{isExportingVoucher ? 'Saving PNG...' : 'Download PNG'}</span>
                 </button>
                 <button 
                   type="button" 
-                  className="btn-colorful voucher-btn-print"
+                  className="btn-colorful voucher-btn-pdf"
                   onClick={handleExportVoucherPdf}
-                  title="Save as PDF or print official voucher"
+                  disabled={isExportingPdf}
+                  title="Download official settlement voucher as a PDF file"
                 >
-                  <Printer size={14} />
-                  <span>Print / Save PDF</span>
+                  {isExportingPdf ? <RefreshCw size={14} className="animate-spin" /> : <FileText size={14} />}
+                  <span>{isExportingPdf ? 'Saving PDF...' : 'Download PDF'}</span>
                 </button>
               </div>
             </div>

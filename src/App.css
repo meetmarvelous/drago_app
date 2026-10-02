@@ -2123,12 +2123,13 @@
   }
 
   .voucher-btn-export,
-  .voucher-btn-print {
+  .voucher-btn-pdf {
     width: 100%;
     justify-content: center;
-    padding: 9px 8px;
-    font-size: 0.78rem;
+    padding: 10px 8px;
+    font-size: 0.8rem;
     white-space: nowrap;
+    gap: 6px;
   }
 
   .roadmap-steps-track {
@@ -3192,10 +3193,34 @@
 }
 
 .voucher-btn-export,
-.voucher-btn-print {
+.voucher-btn-pdf {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 9px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.voucher-btn-pdf {
+  background: linear-gradient(135deg, #7B1113 0%, #9B1B20 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #7B1113 !important;
+  box-shadow: 0 2px 8px rgba(123, 17, 19, 0.22);
+}
+
+.voucher-btn-pdf:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5E0D0F 0%, #7B1113 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(123, 17, 19, 0.32);
+}
+
+.voucher-btn-pdf:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .voucher-actions-row {
@@ -3475,41 +3500,120 @@
 }
 
 @media print {
-  body, html {
+  @page {
+    margin: 10mm;
+    size: auto;
+  }
+
+  html, body {
     background: #FFFFFF !important;
-    color: #000000 !important;
-  }
-  body * {
-    visibility: hidden !important;
-  }
-  #official-voucher-certificate, #official-voucher-certificate * {
-    visibility: visible !important;
-  }
-  #official-voucher-certificate {
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-shadow: none !important;
-    border: 2px solid #7B1113 !important;
-    border-radius: 12px !important;
-    padding: 24px !important;
+    color: #0F172A !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
     margin: 0 !important;
-    background: #FFFFFF !important;
-    z-index: 999999 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
+
+  /* Completely hide all non-voucher UI components from print */
+  #root > *:not(.modal-backdrop-wrap),
+  .navbar-container,
+  .app-header-nav,
+  .hero-section,
+  .stats-grid-root,
+  .b2b-portal-container,
+  .protocol-hub-container,
+  .footer-root,
+  .ticker-bar,
+  .ticker-wrap,
+  .toast-container,
+  .workspace-segmented-capsule,
+  .workspace-mode-bar,
+  .roadmap-preview-card,
+  .voucher-actions-sticky-bar,
+  .voucher-close-x-btn,
+  .voucher-actions-row,
+  .modal-actions-row,
+  .btn-icon-copy {
+    display: none !important;
+  }
+
+  /* Unclip all ancestor wrappers of the certificate */
   .modal-backdrop-wrap {
     position: static !important;
     background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     padding: 0 !important;
+    margin: 0 !important;
     display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
   }
-  .voucher-actions-row, 
-  .modal-actions-row,
-  .voucher-actions-sticky-bar,
-  .voucher-close-x-btn {
-    display: none !important;
+
+  .voucher-modal-card {
+    position: static !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    background: #FFFFFF !important;
+  }
+
+  .voucher-certificate-scroll-area {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  #official-voucher-certificate {
+    position: static !important;
+    display: block !important;
+    visibility: visible !important;
+    max-width: 680px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 24px !important;
+    border: 2px solid #7B1113 !important;
+    border-radius: 14px !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  #official-voucher-certificate * {
+    visibility: visible !important;
+  }
+
+  .voucher-top-bar {
+    border-bottom: 2px solid #D4AF37 !important;
+  }
+
+  .voucher-funds-highlight {
+    background: #FFFDF8 !important;
+    border: 2px solid #D4AF37 !important;
+  }
+
+  .v-funds-num.jpy {
+    color: #7B1113 !important;
+  }
+
+  .brand-icon-box.voucher-logo-box {
+    background: #7B1113 !important;
   }
 }
 

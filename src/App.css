@@ -1769,6 +1769,18 @@
     display: none;
   }
 
+  .notification-dropdown {
+    position: fixed;
+    top: 66px;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    max-width: 360px;
+    margin: 0 auto;
+    z-index: 1001;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+  }
+
   .workspace-mode-bar {
     padding: 8px 12px;
   }
@@ -1785,15 +1797,24 @@
   .workspace-mode-tab {
     padding: 8px 10px;
     gap: 6px;
+    min-width: 0;
+  }
+
+  .tab-label-full {
+    display: none;
+  }
+
+  .tab-label-short {
+    display: inline;
   }
 
   .mode-tab-label {
     font-size: 0.82rem;
+    min-width: 0;
   }
 
   .mode-tab-badge {
-    font-size: 0.62rem;
-    padding: 1px 6px;
+    display: none !important;
   }
 
   .verified-contracts-bar {
@@ -1935,8 +1956,16 @@
   }
 
   .notification-dropdown {
-    width: min(290px, calc(100vw - 20px));
-    right: 0;
+    position: fixed;
+    top: 60px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-width: 350px;
+    margin: 0 auto;
+    padding: 14px;
+    z-index: 1001;
+    box-shadow: 0 20px 42px rgba(15, 23, 42, 0.25);
   }
 
   .workspace-mode-bar {
@@ -1951,15 +1980,18 @@
   .workspace-mode-tab {
     padding: 7px 6px;
     gap: 4px;
+    min-width: 0;
   }
 
   .mode-tab-icon svg {
     width: 14px;
     height: 14px;
+    flex-shrink: 0;
   }
 
   .mode-tab-label {
-    font-size: 0.76rem;
+    font-size: 0.75rem;
+    min-width: 0;
   }
 
   .mode-tab-badge {
@@ -2489,6 +2521,15 @@
   border: 2px solid #FFFFFF;
 }
 
+.notification-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(15, 23, 42, 0.2);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
 .notification-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -2498,7 +2539,7 @@
   border-radius: 16px;
   border: 1px solid var(--border-light);
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
-  z-index: 1000;
+  z-index: 1001;
   padding: 16px;
   animation: alert-pop 0.25s ease;
 }
@@ -2533,6 +2574,11 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
+}
+
+.notif-item > div {
+  min-width: 0;
+  word-break: break-word;
 }
 
 .notif-dot {
@@ -3280,6 +3326,8 @@
   white-space: nowrap;
   font-family: inherit;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .workspace-mode-tab:hover {
@@ -3300,6 +3348,7 @@
   justify-content: center;
   color: #94A3B8;
   transition: color 0.2s;
+  flex-shrink: 0;
 }
 
 .workspace-mode-tab.active .mode-tab-icon {
@@ -3310,6 +3359,18 @@
   font-size: 0.86rem;
   font-weight: 700;
   letter-spacing: -0.01em;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-label-full {
+  display: inline;
+}
+
+.tab-label-short {
+  display: none;
 }
 
 .mode-tab-badge {

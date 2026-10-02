@@ -1275,35 +1275,42 @@ export default function App() {
               </button>
 
               {notificationMenuOpen && (
-                <div className="notification-dropdown">
-                  <div className="notif-header">
-                    <span>Corridor Live Events</span>
-                    <span className="notif-count">3 Live</span>
+                <>
+                  <div 
+                    className="notification-backdrop" 
+                    onClick={() => setNotificationMenuOpen(false)}
+                    aria-hidden="true"
+                  />
+                  <div className="notification-dropdown">
+                    <div className="notif-header">
+                      <span>Corridor Live Events</span>
+                      <span className="notif-count">3 Live</span>
+                    </div>
+                    <div className="notif-list">
+                      <div className="notif-item">
+                        <span className="notif-dot green" />
+                        <div>
+                          <div className="notif-title">Yokohama Port Export Clearance</div>
+                          <div className="notif-time">2 mins ago • JAAI Certificate verified</div>
+                        </div>
+                      </div>
+                      <div className="notif-item">
+                        <span className="notif-dot gold" />
+                        <div>
+                          <div className="notif-title">Tokyo Interbank FX Window Open</div>
+                          <div className="notif-time">12 mins ago • Guaranteed rate: 1 USD = {fxRate} JPY</div>
+                        </div>
+                      </div>
+                      <div className="notif-item">
+                        <span className="notif-dot crimson" />
+                        <div>
+                          <div className="notif-title">Digital Escrow Protection Active</div>
+                          <div className="notif-time">1 hr ago • Zero counterparty loss guaranteed</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="notif-list">
-                    <div className="notif-item">
-                      <span className="notif-dot green" />
-                      <div>
-                        <div className="notif-title">Yokohama Port Export Clearance</div>
-                        <div className="notif-time">2 mins ago • JAAI Certificate verified</div>
-                      </div>
-                    </div>
-                    <div className="notif-item">
-                      <span className="notif-dot gold" />
-                      <div>
-                        <div className="notif-title">Tokyo Interbank FX Window Open</div>
-                        <div className="notif-time">12 mins ago • Guaranteed rate: 1 USD = {fxRate} JPY</div>
-                      </div>
-                    </div>
-                    <div className="notif-item">
-                      <span className="notif-dot crimson" />
-                      <div>
-                        <div className="notif-title">Digital Escrow Protection Active</div>
-                        <div className="notif-time">1 hr ago • Zero counterparty loss guaranteed</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                </>
               )}
             </div>
 
@@ -1570,7 +1577,10 @@ export default function App() {
               <span className="mode-tab-icon">
                 <Building2 size={16} />
               </span>
-              <span className="mode-tab-label">B2B Trade Portal</span>
+              <span className="mode-tab-label">
+                <span className="tab-label-full">B2B Trade Portal</span>
+                <span className="tab-label-short">Trade Portal</span>
+              </span>
               <span className="mode-tab-badge live">
                 <span className="mode-badge-dot live" />
                 <span>Live</span>
@@ -1590,7 +1600,10 @@ export default function App() {
               <span className="mode-tab-icon">
                 <Cpu size={16} />
               </span>
-              <span className="mode-tab-label">Protocol & AI Hub</span>
+              <span className="mode-tab-label">
+                <span className="tab-label-full">Protocol & AI Hub</span>
+                <span className="tab-label-short">Protocol & AI</span>
+              </span>
               <span className="mode-tab-badge testnet">
                 <span className="mode-badge-dot gold" />
                 <span>Sepolia MVP</span>

@@ -4176,18 +4176,24 @@
 
 .spec-line-item {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
+  gap: 16px;
   font-size: 0.85rem;
+  line-height: 1.45;
 }
 
 .spec-line-item .label {
   color: var(--text-muted);
+  font-weight: 500;
+  flex-shrink: 0;
 }
 
 .spec-line-item .value {
   font-weight: 600;
   color: var(--text-dark);
+  text-align: right;
+  word-break: break-word;
 }
 
 .spec-line-item .value.gold {
@@ -4547,6 +4553,41 @@
   }
   .trust-card-sub {
     font-size: 0.7rem;
+  }
+
+  .card-specs-panel {
+    padding: 14px 14px;
+    gap: 10px;
+  }
+
+  .spec-line-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .spec-line-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .spec-line-item .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .spec-line-item .value {
+    text-align: left;
+    font-size: 0.86rem;
+  }
+
+  .spec-line-item.metamask-spec-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 

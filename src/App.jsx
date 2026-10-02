@@ -2936,7 +2936,7 @@ export default function App() {
                         <ExternalLink size={12} />
                       </a>
                     </div>
-                    <div className="spec-line-item" style={{ marginTop: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="spec-line-item metamask-spec-item" style={{ marginTop: 6 }}>
                       <span className="label">Add to MetaMask:</span>
                       <button 
                         type="button" 

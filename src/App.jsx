@@ -96,7 +96,7 @@ export default function App() {
   // ==========================================
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
-  const [walletNetwork, setWalletNetwork] = useState('Ethereum Sepolia Testnet');
+  const [walletNetwork, setWalletNetwork] = useState('Arbitrum Sepolia Testnet');
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   const [protocolStep, setProtocolStep] = useState(1);
   
@@ -358,10 +358,10 @@ export default function App() {
 
             try {
               const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-              if (chainId === '0xaa36a7') {
-                setWalletNetwork('Ethereum Sepolia Testnet');
+              if (chainId === '0x66eee') {
+                setWalletNetwork('Arbitrum Sepolia Testnet');
               } else {
-                setWalletNetwork('Non-Sepolia Network');
+                setWalletNetwork('Non-Arbitrum Network');
               }
 
               const balHex = await window.ethereum.request({
@@ -393,12 +393,12 @@ export default function App() {
       };
 
       const handleChainChanged = (chainId) => {
-        if (chainId === '0xaa36a7') {
-          setWalletNetwork('Ethereum Sepolia Testnet');
-          showToast('Network Switched', 'Connected to Ethereum Sepolia Testnet.', 'success');
+        if (chainId === '0x66eee') {
+          setWalletNetwork('Arbitrum Sepolia Testnet');
+          showToast('Network Switched', 'Connected to Arbitrum Sepolia Testnet.', 'success');
         } else {
-          setWalletNetwork('Non-Sepolia Network');
-          showToast('Wrong Network', 'Please switch your wallet to Sepolia Testnet.', 'warning');
+          setWalletNetwork('Non-Arbitrum Network');
+          showToast('Wrong Network', 'Please switch your wallet to Arbitrum Sepolia Testnet.', 'warning');
         }
       };
 
@@ -425,32 +425,32 @@ export default function App() {
           setWalletAddress(account);
           setWalletConnected(true);
 
-          // Verify Network: Sepolia is 0xaa36a7 (11155111)
+          // Verify Network: Arbitrum Sepolia is 0x66eee (421614)
           const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-          if (currentChainId !== '0xaa36a7') {
+          if (currentChainId !== '0x66eee') {
             try {
               await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
-                params: [{ chainId: '0xaa36a7' }],
+                params: [{ chainId: '0x66eee' }],
               });
-              setWalletNetwork('Ethereum Sepolia Testnet');
+              setWalletNetwork('Arbitrum Sepolia Testnet');
             } catch (switchError) {
               if (switchError.code === 4902) {
                 await window.ethereum.request({
                   method: 'wallet_addEthereumChain',
                   params: [{
-                    chainId: '0xaa36a7',
-                    chainName: 'Ethereum Sepolia Testnet',
-                    nativeCurrency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 },
-                    rpcUrls: ['https://eth-sepolia.g.alchemy.com/v2/alch_yX4sywCIZulctfyTjTEpu', 'https://rpc.sepolia.org'],
-                    blockExplorerUrls: ['https://sepolia.etherscan.io'],
+                    chainId: '0x66eee',
+                    chainName: 'Arbitrum Sepolia Testnet',
+                    nativeCurrency: { name: 'Arbitrum Sepolia ETH', symbol: 'ETH', decimals: 18 },
+                    rpcUrls: ['https://sepolia-rollup.arbitrum.io/rpc'],
+                    blockExplorerUrls: ['https://sepolia.arbiscan.io'],
                   }],
                 });
-                setWalletNetwork('Ethereum Sepolia Testnet');
+                setWalletNetwork('Arbitrum Sepolia Testnet');
               }
             }
           } else {
-            setWalletNetwork('Ethereum Sepolia Testnet');
+            setWalletNetwork('Arbitrum Sepolia Testnet');
           }
 
           // Query Real Sepolia ETH Balance
@@ -496,7 +496,7 @@ export default function App() {
 
   const handleDisconnectWallet = () => {
     setWalletConnected(false);
-    showToast('Wallet Disconnected', 'Disconnected from Ethereum Sepolia session.', 'info');
+    showToast('Wallet Disconnected', 'Disconnected from Arbitrum Sepolia session.', 'info');
   };
 
   const handleMintStable = async (e) => {
@@ -524,14 +524,14 @@ export default function App() {
         const amountWei = ethers.parseEther(amt.toString());
         showToast(
           'Confirm in MetaMask',
-          `Please confirm transaction in your wallet to mint ${amt.toLocaleString()} ${mintStableType} on Sepolia.`,
+          `Please confirm transaction in your wallet to mint ${amt.toLocaleString()} ${mintStableType} on Arbitrum Sepolia.`,
           'info'
         );
 
         const tx = await contract.faucet(amountWei);
         showToast(
           'Transaction Sent',
-          `Broadcasting ${mintStableType} mint to Sepolia. Tx: ${tx.hash.substring(0, 10)}...`,
+          `Broadcasting ${mintStableType} mint to Arbitrum Sepolia. Tx: ${tx.hash.substring(0, 10)}...`,
           'info'
         );
 
@@ -556,7 +556,7 @@ export default function App() {
 
         showToast(
           `${mintStableType} Confirmed On-Chain`,
-          `Successfully minted ${amt.toLocaleString()} ${mintStableType} on Sepolia testnet! Block: ${receipt.blockNumber}`,
+          `Successfully minted ${amt.toLocaleString()} ${mintStableType} on Arbitrum Sepolia testnet! Block: ${receipt.blockNumber}`,
           'success'
         );
         setIsMintingStable(false);
@@ -571,7 +571,7 @@ export default function App() {
       setIsMintingStable(false);
       showToast(
         'MetaMask Required',
-        'Please connect MetaMask on Ethereum Sepolia Testnet to mint real protocol tokens.',
+        'Please connect MetaMask on Arbitrum Sepolia Testnet to mint real protocol tokens.',
         'warning'
       );
       handleConnectWallet();
@@ -581,7 +581,7 @@ export default function App() {
   // 1-Click Quick Mint DGX Faucet Handler (For Trade Testing)
   const handleQuickMintDgx = async (desiredAmount) => {
     if (typeof window === 'undefined' || !window.ethereum || !walletConnected || !walletAddress) {
-      showToast('MetaMask Required', 'Please connect MetaMask to mint real DGX on Sepolia.', 'warning');
+      showToast('MetaMask Required', 'Please connect MetaMask to mint real DGX on Arbitrum Sepolia.', 'warning');
       handleConnectWallet();
       return;
     }
@@ -986,7 +986,7 @@ export default function App() {
 
     if (paymentRail === 'sepolia') {
       if (!walletConnected || !walletAddress) {
-        showToast('MetaMask Required', 'Please connect your MetaMask wallet on Sepolia to deposit to Smart Escrow.', 'warning');
+        showToast('MetaMask Required', 'Please connect your MetaMask wallet on Arbitrum Sepolia to deposit to Smart Escrow.', 'warning');
         handleConnectWallet();
         return;
       }
@@ -994,7 +994,7 @@ export default function App() {
       if (stableBalances.dgx < amount) {
         showToast(
           'Insufficient DGX Balance',
-          `Invoice requires ${amount.toLocaleString()} DGX. Your Sepolia balance is ${stableBalances.dgx.toLocaleString()} DGX. Use the Protocol Faucet to mint DGX first.`,
+          `Invoice requires ${amount.toLocaleString()} DGX. Your Arbitrum Sepolia balance is ${stableBalances.dgx.toLocaleString()} DGX. Use the Protocol Faucet to mint DGX first.`,
           'error'
         );
         return;
@@ -1026,7 +1026,7 @@ export default function App() {
           const approveTx = await dgxContract.approve(escrowAddress, amountWei);
           showToast('Approval Broadcasting', `Broadcasting DGX approval: ${approveTx.hash.slice(0, 12)}...`, 'info');
           await approveTx.wait();
-          showToast('Approval Confirmed', 'DGX spend approved on Sepolia. Now confirming escrow deposit...', 'success');
+          showToast('Approval Confirmed', 'DGX spend approved on Arbitrum Sepolia. Now confirming escrow deposit...', 'success');
         }
 
         // Step 2: Deposit to Escrow
@@ -1044,7 +1044,7 @@ export default function App() {
           30 * 86400
         );
 
-        showToast('Escrow Transaction Sent', `Broadcasting deposit to Sepolia: ${depositTx.hash.slice(0, 12)}...`, 'info');
+        showToast('Escrow Transaction Sent', `Broadcasting deposit to Arbitrum Sepolia: ${depositTx.hash.slice(0, 12)}...`, 'info');
         const depositReceipt = await depositTx.wait();
 
         // Refresh on-chain balance
@@ -1111,7 +1111,7 @@ export default function App() {
 
         showToast(
           'On-Chain Escrow Confirmed',
-          `Order ${poNum} funded with ${amount.toLocaleString()} DGX on Sepolia (Block: ${depositReceipt.blockNumber}).`,
+          `Order ${poNum} funded with ${amount.toLocaleString()} DGX on Arbitrum Sepolia (Block: ${depositReceipt.blockNumber}).`,
           'success'
         );
       } catch (err) {
@@ -2196,13 +2196,13 @@ export default function App() {
                     <div className="balance-text-stack">
                       <div className="balance-top-row">
                         <span className="balance-label">
-                          {paymentRail === 'sepolia' ? 'Sepolia Token Balance' : 'Commercial Escrow Balance'}
+                          {paymentRail === 'sepolia' ? 'Arbitrum Sepolia Token Balance' : 'Commercial Escrow Balance'}
                         </span>
                         <button 
                           type="button" 
                           className="btn-reset-demo"
                           onClick={handleSyncOnChainBalances}
-                          title="Sync balances with Ethereum Sepolia contract"
+                          title="Sync balances with Arbitrum Sepolia contract"
                         >
                           <RefreshCw size={12} />
                           <span>Sync Balances</span>
@@ -2385,7 +2385,7 @@ export default function App() {
                         <td style={{ padding: '14px 16px' }}>
                           {ord.escrowContractTx ? (
                             <a
-                              href={`https://sepolia.etherscan.io/tx/${ord.escrowContractTx}`}
+                              href={`https://sepolia.arbiscan.io/tx/${ord.escrowContractTx}`}
                               target="_blank"
                               rel="noreferrer"
                               style={{
@@ -2398,7 +2398,7 @@ export default function App() {
                                 textDecoration: 'none',
                                 fontWeight: 600,
                               }}
-                              title="Verify on Sepolia Etherscan"
+                              title="Verify on Arbiscan"
                             >
                               <span>{ord.escrowContractTx.slice(0, 8)}...{ord.escrowContractTx.slice(-6)}</span>
                               <ExternalLink size={12} />
@@ -2647,7 +2647,7 @@ export default function App() {
                   </div>
                 ) : (
                   <div style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.4 }}>
-                    Pre-loaded with $5,000 DGX sandbox funds for instant zero-gas testing. Connect MetaMask to test real Ethereum Sepolia smart contracts.
+                    Pre-loaded with $5,000 DGX sandbox funds for instant zero-gas testing. Connect MetaMask to test real Arbitrum Sepolia smart contracts.
                   </div>
                 )}
               </div>
@@ -2671,7 +2671,7 @@ export default function App() {
                 <span className="wallet-bal-val">{syntheticBalances.fly.toFixed(0)} bbl</span>
               </div>
               <div className="wallet-bal-pill">
-                <span className="wallet-bal-lbl">Gas (Sepolia)</span>
+                <span className="wallet-bal-lbl">Gas (Arb Sepolia)</span>
                 <span className="wallet-bal-val">{stableBalances.eth} ETH</span>
               </div>
 
@@ -2704,12 +2704,12 @@ export default function App() {
                 <Sparkles size={22} color="var(--color-crimson)" />
                 <div>
                   <h3 className="roadmap-title">DRAGO X Protocol • 5-Step MVP Guided Walkthrough</h3>
-                  <span className="roadmap-subtitle">Interactive testnet front-end interface (Ethereum Sepolia Testnet)</span>
+                  <span className="roadmap-subtitle">Interactive testnet front-end interface (Arbitrum Sepolia Testnet)</span>
                 </div>
               </div>
               <div className="badge-pill badge-gold">
                 <Activity size={14} />
-                <span>Live Sepolia Protocol Engine</span>
+                <span>Live Arbitrum Sepolia Engine</span>
               </div>
             </div>
 
@@ -2752,16 +2752,16 @@ export default function App() {
             </div>
           </div>
 
-          {/* VERIFIED SEPOLIA SMART CONTRACTS BAR */}
+          {/* VERIFIED ARBITRUM SEPOLIA SMART CONTRACTS BAR */}
           <div className="verified-contracts-bar">
             <div className="verified-bar-header">
               <div className="verified-title-group">
                 <CheckCircle2 size={18} color="#10B981" />
-                <span className="verified-title">Live Verified Smart Contracts (Ethereum Sepolia Testnet)</span>
+                <span className="verified-title">Live Verified Smart Contracts (Arbitrum Sepolia Testnet)</span>
               </div>
               <div className="badge-pill badge-emerald">
                 <span className="live-pulse" />
-                <span>Alchemy Sepolia Live</span>
+                <span>Arbitrum Sepolia Live</span>
               </div>
             </div>
 
@@ -2794,11 +2794,11 @@ export default function App() {
                       {copiedAddress === deployedContracts.contracts.DGXToken ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
                     </button>
                     <a 
-                      href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGXToken}`} 
+                      href={`https://sepolia.arbiscan.io/address/${deployedContracts.contracts.DGXToken}`} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="contract-link" 
-                      title="View on Sepolia Etherscan"
+                      title="View on Arbiscan"
                     >
                       <ExternalLink size={12} />
                     </a>
@@ -2834,11 +2834,11 @@ export default function App() {
                       {copiedAddress === deployedContracts.contracts.DGZToken ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
                     </button>
                     <a 
-                      href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DGZToken}`} 
+                      href={`https://sepolia.arbiscan.io/address/${deployedContracts.contracts.DGZToken}`} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="contract-link" 
-                      title="View on Sepolia Etherscan"
+                      title="View on Arbiscan"
                     >
                       <ExternalLink size={12} />
                     </a>
@@ -2866,11 +2866,11 @@ export default function App() {
                       {copiedAddress === deployedContracts.contracts.DragoEscrow ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
                     </button>
                     <a 
-                      href={`https://sepolia.etherscan.io/address/${deployedContracts.contracts.DragoEscrow}`} 
+                      href={`https://sepolia.arbiscan.io/address/${deployedContracts.contracts.DragoEscrow}`} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="contract-link" 
-                      title="View on Sepolia Etherscan"
+                      title="View on Arbiscan"
                     >
                       <ExternalLink size={12} />
                     </a>
@@ -2981,18 +2981,18 @@ export default function App() {
                       <span className="value emerald">{mintStableType === 'DGX' ? '1 DGX = $1.0000 USD' : '1 DGZ = ¥1.00 JPY'}</span>
                     </div>
                     <div className="spec-line-item">
-                      <span className="label">Sepolia Gas Estimate:</span>
-                      <span className="value">~0.0018 ETH (Free Testnet)</span>
+                      <span className="label">Arbitrum Gas Estimate:</span>
+                      <span className="value">~0.0001 ETH (Free Testnet)</span>
                     </div>
                     <div className="spec-line-item">
-                      <span className="label">Sepolia Smart Contract:</span>
+                      <span className="label">Arbitrum Smart Contract:</span>
                       <a 
-                        href={`https://sepolia.etherscan.io/address/${mintStableType === 'DGX' ? deployedContracts.contracts.DGXToken : deployedContracts.contracts.DGZToken}`} 
+                        href={`https://sepolia.arbiscan.io/address/${mintStableType === 'DGX' ? deployedContracts.contracts.DGXToken : deployedContracts.contracts.DGZToken}`} 
                         target="_blank" 
                         rel="noreferrer" 
                         className="value gold" 
                         style={{ fontFamily: 'monospace', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-                        title="View verified contract on Sepolia Etherscan"
+                        title="View verified contract on Arbiscan"
                       >
                         {(mintStableType === 'DGX' ? deployedContracts.contracts.DGXToken : deployedContracts.contracts.DGZToken).substring(0, 10)}... (Verified)
                         <ExternalLink size={12} />
@@ -3576,7 +3576,7 @@ export default function App() {
               <span>•</span>
               <span>Guaranteed JPY Settlement</span>
               <span>•</span>
-              <span>Ethereum Sepolia Audited Contracts</span>
+              <span>Arbitrum Sepolia Audited Contracts</span>
             </div>
           </div>
         </div>
@@ -3802,7 +3802,7 @@ export default function App() {
                   </div>
                   <div>
                     <span className="v-spec-lbl">Settlement Rail:</span>
-                    <strong className="v-spec-val">Ethereum Sepolia (DragoEscrow.sol)</strong>
+                    <strong className="v-spec-val">Arbitrum Sepolia (DragoEscrow.sol)</strong>
                   </div>
                   <div>
                     <span className="v-spec-lbl">Tokyo Clearing Code:</span>
@@ -3829,7 +3829,7 @@ export default function App() {
                   {activeVoucher.txHash && activeVoucher.txHash.startsWith('0x') && (
                     <div style={{ marginTop: 8 }}>
                       <a
-                        href={`https://sepolia.etherscan.io/tx/${activeVoucher.txHash}`}
+                        href={`https://sepolia.arbiscan.io/tx/${activeVoucher.txHash}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{
@@ -3842,7 +3842,7 @@ export default function App() {
                           textDecoration: 'none',
                         }}
                       >
-                        <span>Verify Transaction on Sepolia Etherscan</span>
+                        <span>Verify Transaction on Arbiscan</span>
                         <ExternalLink size={13} />
                       </a>
                     </div>

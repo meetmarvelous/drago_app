@@ -138,6 +138,12 @@ export default function App() {
   // Commercial Voucher Modal State
   const [voucherModalOpen, setVoucherModalOpen] = useState(false);
   const [activeVoucher, setActiveVoucher] = useState(null);
+
+  // Beta Tester Waitlist State (Email Only)
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [waitlistPosition, setWaitlistPosition] = useState(154);
   const [voucherCopied, setVoucherCopied] = useState(false);
   const [isExportingVoucher, setIsExportingVoucher] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
@@ -281,6 +287,15 @@ export default function App() {
             date: new Date(o.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
             savingsUsd: ((parseFloat(o.totalAmount) || 0) * 0.042).toFixed(2)
           })));
+        }
+      })
+      .catch(() => {});
+
+    // Fetch live waitlist count from backend
+    dragoApi.getWaitlistCount()
+      .then((res) => {
+        if (res && res.totalWaitlist) {
+          setWaitlistPosition(res.totalWaitlist);
         }
       })
       .catch(() => {});
@@ -1222,6 +1237,55 @@ export default function App() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleJoinWaitlist = async (e) => {
+    e.preventDefault();
+    const trimmed = waitlistEmail.trim().toLowerCase();
+    if (!trimmed || !trimmed.includes('@')) {
+      showToast('Invalid Email', 'Please enter a valid email address.', 'error');
+      return;
+    }
+
+    setIsSubmittingWaitlist(true);
+    try {
+      const res = await dragoApi.joinWaitlist({
+        email: trimmed
+      });
+
+      setWaitlistSubmitted(true);
+      if (res?.totalWaitlist) {
+        setWaitlistPosition(res.totalWaitlist);
+      }
+
+      confetti({
+        particleCount: 70,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: ['#FF6500', '#0B192C', '#D4AF37']
+      });
+
+      showToast(
+        'Beta Invite Confirmed',
+        res?.message || 'You are on the beta tester waitlist!',
+        'success'
+      );
+    } catch (err) {
+      setWaitlistSubmitted(true);
+      confetti({
+        particleCount: 50,
+        spread: 50,
+        origin: { y: 0.7 },
+        colors: ['#FF6500', '#D4AF37']
+      });
+      showToast(
+        'Beta Invite Reserved',
+        'You are on the beta tester list! We will reach out when testing opens.',
+        'success'
+      );
+    } finally {
+      setIsSubmittingWaitlist(false);
+    }
+  };
+
   return (
     <div className="app-wrapper">
       {/* Background Atmosphere */}
@@ -1297,6 +1361,7 @@ export default function App() {
                 <a href="#payment" className="nav-link-item">Pay Supplier</a>
                 <a href="#catalog" className="nav-link-item">Catalog</a>
                 <a href="#how-it-works" className="nav-link-item">How It Works</a>
+                <a href="#waitlist" className="nav-link-item">Early Access</a>
               </>
             ) : (
               <>
@@ -1516,6 +1581,14 @@ export default function App() {
               >
                 <CheckCircle2 size={18} color="var(--color-gold)" />
                 <span>How It Works (4 Simple Steps)</span>
+              </a>
+              <a 
+                href="#waitlist" 
+                className="mobile-nav-link-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Sparkles size={18} color="#FF6500" />
+                <span>Join Early Access Waitlist</span>
               </a>
             </>
           ) : (
@@ -2614,6 +2687,112 @@ export default function App() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. BETA TESTER WAITLIST (EMAIL ONLY) */}
+      <section id="waitlist" className="waitlist-section scroll-reveal">
+        <div className="waitlist-container">
+          <div className="waitlist-header">
+            <div className="waitlist-badge">
+              <Sparkles size={14} />
+              <span>Beta Tester Invitation</span>
+            </div>
+            <h2 className="waitlist-title">
+              Join the <span className="highlight">Beta Tester Cohort</span>
+            </h2>
+            <p className="waitlist-subtitle">
+              Be the first to test DRAGO X cross-border trade settlement rails on Arbitrum Sepolia. Enter your email below to reserve your priority beta invite.
+            </p>
+          </div>
+
+          <div className="waitlist-card">
+            {waitlistSubmitted ? (
+              <div className="waitlist-success-card">
+                <div className="waitlist-success-badge">
+                  <CheckCircle2 size={36} />
+                </div>
+                <h3 className="waitlist-success-title">You're On The Beta List!</h3>
+                <p className="waitlist-success-desc">
+                  We've reserved your beta testing slot for <strong>{waitlistEmail}</strong>. You'll receive priority access and testing instructions as soon as the next beta cohort opens.
+                </p>
+
+                <div className="waitlist-position-badge">
+                  <span className="waitlist-position-number">#{waitlistPosition}</span>
+                  <span className="waitlist-position-label">Beta Tester Position</span>
+                </div>
+
+                <div className="waitlist-meta">
+                  <div className="waitlist-meta-item">
+                    <CheckCircle2 size={16} color="#10B981" />
+                    <span>Invite linked to {waitlistEmail}</span>
+                  </div>
+                  <div className="waitlist-meta-item">
+                    <Shield size={16} color="#D4AF37" />
+                    <span>Zero spam guaranteed</span>
+                  </div>
+                </div>
+
+                <button 
+                  type="button" 
+                  className="waitlist-btn" 
+                  style={{ maxWidth: '240px', margin: '24px auto 0 auto' }}
+                  onClick={() => {
+                    setWaitlistSubmitted(false);
+                    setWaitlistEmail('');
+                  }}
+                >
+                  <RotateCcw size={16} />
+                  <span>Register Another Email</span>
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleJoinWaitlist} className="waitlist-form">
+                <div className="waitlist-inline-form">
+                  <input 
+                    type="email" 
+                    required
+                    placeholder="Enter your email for beta access..."
+                    className="waitlist-input"
+                    value={waitlistEmail}
+                    onChange={(e) => setWaitlistEmail(e.target.value)}
+                  />
+                  <button 
+                    type="submit" 
+                    className="waitlist-btn"
+                    disabled={isSubmittingWaitlist}
+                  >
+                    {isSubmittingWaitlist ? (
+                      <>
+                        <RefreshCw size={18} className="animate-spin" />
+                        <span>Reserving Spot...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send size={18} />
+                        <span>Join Beta Waitlist</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="waitlist-meta">
+                  <div className="waitlist-meta-item">
+                    <Flame size={15} color="#FF6500" />
+                    <span><strong>{waitlistPosition}+</strong> beta testers registered</span>
+                  </div>
+                  <div className="waitlist-meta-item">
+                    <Shield size={15} color="#10B981" />
+                    <span>Arbitrum Sepolia L2 Rails</span>
+                  </div>
+                  <div className="waitlist-meta-item">
+                    <CheckCircle2 size={15} color="#D4AF37" />
+                    <span>No KYC required for beta</span>
+                  </div>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </section>

@@ -134,16 +134,12 @@ export const dragoApi = {
     throw new Error('Presigned URL generation failed');
   },
 
-  // 6. Early Access & Enterprise Waitlist
+  // 6. Waitlist
   async joinWaitlist(waitlistData) {
     return request('/waitlist', {
       method: 'POST',
       body: JSON.stringify(waitlistData),
     });
-  },
-
-  async getWaitlistCount() {
-    return request('/waitlist/count');
   },
 };
 

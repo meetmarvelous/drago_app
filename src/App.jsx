@@ -504,6 +504,31 @@ export default function App() {
     showToast('Wallet Disconnected', 'Disconnected from Arbitrum Sepolia session.', 'info');
   };
 
+  // Dynamic Gas Fee Buffer for Arbitrum Sepolia Layer 2 (prevents "max fee less than base fee" error)
+  const getGasOverrides = async (provider) => {
+    try {
+      const feeData = await provider.getFeeData();
+      // Arbitrum micro-surges fluctuate within fractions of a gwei.
+      // Setting a safe floor of 0.1 Gwei (~$0.00002) with a 60% buffer guarantees instant inclusion.
+      const minMaxFee = ethers.parseUnits('0.1', 'gwei');
+      const minPriorityFee = ethers.parseUnits('0.05', 'gwei');
+
+      const bufferedMaxFee = feeData.maxFeePerGas ? (feeData.maxFeePerGas * 160n) / 100n : minMaxFee;
+      const maxFeePerGas = bufferedMaxFee > minMaxFee ? bufferedMaxFee : minMaxFee;
+
+      const bufferedPriority = feeData.maxPriorityFeePerGas ? (feeData.maxPriorityFeePerGas * 160n) / 100n : minPriorityFee;
+      const maxPriorityFeePerGas = bufferedPriority > minPriorityFee ? bufferedPriority : minPriorityFee;
+
+      return { maxFeePerGas, maxPriorityFeePerGas };
+    } catch (e) {
+      console.warn('Could not query dynamic fee data, using fallback gas buffer:', e);
+      return {
+        maxFeePerGas: ethers.parseUnits('0.15', 'gwei'),
+        maxPriorityFeePerGas: ethers.parseUnits('0.05', 'gwei'),
+      };
+    }
+  };
+
   const handleMintStable = async (e) => {
     e.preventDefault();
     const amt = parseFloat(mintStableAmount);
@@ -533,7 +558,8 @@ export default function App() {
           'info'
         );
 
-        const tx = await contract.faucet(amountWei);
+        const feeOverrides = await getGasOverrides(provider);
+        const tx = await contract.faucet(amountWei, feeOverrides);
         showToast(
           'Transaction Sent',
           `Broadcasting ${mintStableType} mint to Arbitrum Sepolia. Tx: ${tx.hash.substring(0, 10)}...`,
@@ -599,7 +625,8 @@ export default function App() {
       const amountWei = ethers.parseEther(mintAmt.toString());
 
       showToast('Confirm Faucet Mint', `Please confirm in MetaMask to mint ${mintAmt.toLocaleString()} DGX on Sepolia.`, 'info');
-      const tx = await dgxContract.faucet(amountWei);
+      const feeOverrides = await getGasOverrides(provider);
+      const tx = await dgxContract.faucet(amountWei, feeOverrides);
       showToast('Minting Broadcasting', `Sepolia Tx: ${tx.hash.slice(0, 12)}...`, 'info');
       const receipt = await tx.wait();
 
@@ -642,7 +669,8 @@ export default function App() {
       );
 
       const orderIdBytes = order.orderIdBytes || ethers.keccak256(ethers.toUtf8Bytes(order.poNumber));
-      const tx = await escrowContract.releaseToSupplier(orderIdBytes);
+      const feeOverrides = await getGasOverrides(provider);
+      const tx = await escrowContract.releaseToSupplier(orderIdBytes, feeOverrides);
       showToast('Releasing Escrow', `Broadcasting release on Sepolia: ${tx.hash.slice(0, 12)}...`, 'info');
       const receipt = await tx.wait();
 
@@ -1022,13 +1050,15 @@ export default function App() {
 
         // Step 1: Check token allowance
         const currentAllowance = await dgxContract.allowance(walletAddress, escrowAddress);
+        const feeOverrides = await getGasOverrides(provider);
+
         if (currentAllowance < amountWei) {
           showToast(
             'Step 1/2: Approve DGX',
             `Please confirm approval in MetaMask to allow DragoEscrow to hold ${amount.toLocaleString()} DGX.`,
             'info'
           );
-          const approveTx = await dgxContract.approve(escrowAddress, amountWei);
+          const approveTx = await dgxContract.approve(escrowAddress, amountWei, feeOverrides);
           showToast('Approval Broadcasting', `Broadcasting DGX approval: ${approveTx.hash.slice(0, 12)}...`, 'info');
           await approveTx.wait();
           showToast('Approval Confirmed', 'DGX spend approved on Arbitrum Sepolia. Now confirming escrow deposit...', 'success');
@@ -1046,7 +1076,8 @@ export default function App() {
           supplierAddr,
           dgxAddress,
           amountWei,
-          30 * 86400
+          30 * 86400,
+          feeOverrides
         );
 
         showToast('Escrow Transaction Sent', `Broadcasting deposit to Arbitrum Sepolia: ${depositTx.hash.slice(0, 12)}...`, 'info');
